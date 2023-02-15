@@ -1,6 +1,9 @@
-const PhoneNumberListEntry = ({ name, phoneNumber }) => {
+const PhoneNumberListEntry = ({ name, phoneNumber, handleDelete }) => {
   return (
-    <li>{name} {phoneNumber}</li>
+    <li>
+      {name} {phoneNumber}
+      <button onClick={handleDelete}>Delete</button>
+    </li>
   );
 }
 
