@@ -20,4 +20,5 @@ const destroy = async (id) => {
   return response.data;
 }
 
+// eslint-disable-next-line
 export default { getAll, create, update, destroy };
