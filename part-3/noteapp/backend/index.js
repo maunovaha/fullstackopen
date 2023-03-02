@@ -11,19 +11,23 @@ const requestLogger = (req, res, next) => {
   console.log('Body:  ', req.body);
   console.log('---');
   next();
-}
+};
 
 const unknownEndpoint = (req, res) => {
   res.status(404).send({ error: 'unknown endpoint' });
-}
+};
 
 const errorHandler = (error, req, res, next) => {
   console.error(error.message);
+
   if (error.name === 'CastError') {
     return res.status(400).send({ error: 'malformatted id' });
+  } else if (error.name === 'ValidationError') {
+    return res.status(400).send({ error: error.message });
   }
+
   next(error);
-}
+};
 
 app.use(cors());
 app.use(express.static('build'));
@@ -74,7 +78,7 @@ app.put('/api/notes/:id', async (req, res, next) => {
   const note = { content, important };
 
   try {
-    const updatedNote = await Note.findByIdAndUpdate(req.params.id, note, { new: true });
+    const updatedNote = await Note.findByIdAndUpdate(req.params.id, note, { new: true, runValidators: true, context: 'query' });
     res.json(updatedNote);
   } catch (error) {
     next(error);

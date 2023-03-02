@@ -38,7 +38,11 @@ const App = () => {
           showNotification(`Updated ${updatedPerson.name}'s details to the phonebook`, true);
         } catch (error) {
           console.error(error);
-          showNotification(`Failed to update ${alreadyAdded.name}'s details to the phonebook, try refreshing the page?`, false);
+          if (error.response.status === 400) {
+            showNotification(error.response.data.error, false);
+          } else {
+            showNotification(`Failed to update ${alreadyAdded.name}'s details to the phonebook, try refreshing the page?`, false);
+          }
         }
       }
     } else {
@@ -55,7 +59,11 @@ const App = () => {
         showNotification(`Added ${createdPerson.name}'s details to the phonebook`, true);
       } catch (error) {
         console.error(error);
-        showNotification(`Failed to add the person details to phonebook, try refreshing the page?`, false);
+        if (error.response.status === 400) {
+          showNotification(error.response.data.error, false);
+        } else {
+          showNotification(`Failed to add the person details to phonebook, try refreshing the page?`, false);
+        }
       }
     }
   }

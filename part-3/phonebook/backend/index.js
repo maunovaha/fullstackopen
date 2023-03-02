@@ -8,11 +8,15 @@ const app = express();
 
 const errorHandler = (error, req, res, next) => {
   console.error(error.message);
+
   if (error.name === 'CastError') {
     return res.status(400).send({ error: 'malformatted id' });
+  } else if (error.name === 'ValidationError') {
+    return res.status(400).send({ error: error.message });
   }
+
   next(error);
-}
+};
 
 app.use(cors());
 app.use(express.static('build'));
@@ -85,7 +89,7 @@ app.put('/api/persons/:id', async (req, res, next) => {
   const person = { name, phoneNumber };
 
   try {
-    const updatedPerson = await Person.findByIdAndUpdate(req.params.id, person, { new: true });
+    const updatedPerson = await Person.findByIdAndUpdate(req.params.id, person, { new: true, runValidators: true, context: 'query' });
     res.json(updatedPerson);
   } catch (error) {
     next(error);
