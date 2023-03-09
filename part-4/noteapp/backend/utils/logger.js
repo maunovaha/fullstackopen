@@ -1,9 +1,15 @@
+const log = (logger, ...params) => {
+  if (process.env.NODE_ENV !== 'test') {
+    logger(...params);
+  }
+};
+
 const info = (...params) => {
-  console.log(...params);
+  log(console.log, ...params);
 };
 
 const error = (...params) => {
-  console.error(...params);
+  log(console.error, ...params);
 };
 
 module.exports = { info, error };

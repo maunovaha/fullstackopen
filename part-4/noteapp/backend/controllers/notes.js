@@ -20,7 +20,7 @@ notesRouter.post('/', async (req, res, next) => {
   try {
     const note = new Note({ content: content, important: important || false });
     const savedNote = await note.save();
-    res.json(savedNote);
+    res.status(201).json(savedNote);
   } catch (error) {
     next(error);
   }

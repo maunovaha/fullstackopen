@@ -1,4 +1,4 @@
-const { average } = require('../utils/for_testing');
+const { average } = require('../utils/for-testing');
 
 describe('average', () => {
   test('of one value is the value itself', () => {

@@ -1,4 +1,9 @@
 const express = require('express');
+// To get rid of typing try/catch inside methods I could install express-async-errors and require it here
+// using require('express-async-errors');
+//
+// However, I don't like to hide catching exceptions inside a library so I am not doing it atm.
+// Read more: https://fullstackopen.com/osa4/backendin_testaaminen#try-catchin-eliminointi
 const mongoose = require('mongoose');
 const cors = require('cors');
 const config = require('./utils/config');
