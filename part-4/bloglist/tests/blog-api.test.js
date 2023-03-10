@@ -106,6 +106,85 @@ test('default value of likes should be zero when new blog is added', async () =>
   );
 });
 
+describe('deletion of a blog', () => {
+  test('succeeds with status code 204 when id is valid', async () => {
+    const blogsBefore = await helper.blogsInDb();
+    const blogToDelete = blogsBefore[0];
+
+    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+
+    const blogsAfter = await helper.blogsInDb();
+    expect(blogsAfter).toHaveLength(helper.initialBlogs.length - 1);
+
+    const contents = blogsAfter.map(blog => blog.title);
+    expect(contents).not.toContain(blogToDelete.title);
+  });
+
+  test('fails with status code 204 when blog does not exist', async () => {
+    await api.delete(`/api/blogs/640b0bfc79365d4bdfb91621`).expect(204);
+
+    const blogs = await helper.blogsInDb();
+    expect(blogs).toHaveLength(helper.initialBlogs.length);
+  });
+});
+
+describe('updating a blog', () => {
+  test('succeeds with status code 200 when data is valid', async () => {
+    const blogsBefore = await helper.blogsInDb();
+    const blogToUpdate = blogsBefore[0];
+    const updatedBlog = { likes: 1337 };
+    
+    const response = await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(updatedBlog)
+      .expect(200)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response.body).toEqual(
+      expect.objectContaining({
+        id: blogToUpdate.id,
+        title: blogToUpdate.title,
+        author: blogToUpdate.author,
+        url: blogToUpdate.url,
+        likes: updatedBlog.likes
+      })
+    );
+  });
+
+  test('fails with status code 400 when data is missing', async () => {
+    const blogsBefore = await helper.blogsInDb();
+    const blogToUpdate = blogsBefore[0];
+    const updatedBlog = {};
+
+    const response = await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(updatedBlog)
+      .expect(400)
+      .expect('Content-Type', /application\/json/);
+
+    expect(response.body).toEqual({ error: 'likes is missing' });
+
+    const blogsAfter = await helper.blogsInDb();
+    expect(blogsAfter).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: blogToUpdate.id,
+          likes: blogToUpdate.likes
+        })
+      ])
+    );
+  });
+
+  test('fails with status code 404 when when blog does not exist', async () => {
+    const updatedBlog = { likes: 7 };
+    const response = await api
+      .put('/api/blogs/640b0bfc79365d4bdfb91621')
+      .send(updatedBlog)
+      .expect(404);
+    expect(response.body).toEqual({});
+  });
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
 });
