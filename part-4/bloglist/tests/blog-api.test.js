@@ -67,7 +67,13 @@ test('blog is not added when title is missing', async () => {
     likes: 11
   };
 
-  await api.post('/api/blogs').send(newBlog).expect(400);
+  const response = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+    .expect('Content-Type', /application\/json/);
+
+  expect(response.body).toEqual({ error: 'title is missing' });
 
   const blogsAtEnd = await helper.blogsInDb();
   expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
@@ -80,7 +86,13 @@ test('blog is not added when url is missing', async () => {
     likes: 11
   };
 
-  await api.post('/api/blogs').send(newBlog).expect(400);
+  const response = await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+    .expect('Content-Type', /application\/json/);
+
+  expect(response.body).toEqual({ error: 'url is missing' });
 
   const blogsAtEnd = await helper.blogsInDb();
   expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
