@@ -12,8 +12,18 @@ blogsRouter.get('/', async (_, response) => {
 });
 
 blogsRouter.post('/', async (request, response) => {
+  const { title, author, url, likes } = request.body;
+
+  if (!title) {
+    return response.status(400).json({ error: 'title missing' });
+  }
+
+  if (!url) {
+    return response.status(400).json({ error: 'url missing' });
+  }
+
   try {
-    const blog = new Blog(request.body);
+    const blog = new Blog({ title, author, url, likes: likes || 0 });
     const savedBlog = await blog.save();
     response.status(201).json(savedBlog);
   } catch (err) {
