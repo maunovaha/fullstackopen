@@ -35,22 +35,22 @@ describe('when there is initially some notes saved', () => {
       const notesAtStart = await helper.notesInDb();
       const noteToView = notesAtStart[0];
 
-      const result = await api
+      const response = await api
         .get(`/api/notes/${noteToView.id}`)
         .expect(200)
         .expect('Content-Type', /application\/json/);
 
-      expect(result.body).toEqual(noteToView);
+      expect(response.body).toEqual(noteToView);
     });
 
     test('fails with status code 404 when note does not exist', async () => {
-      const result = await api.get(`/api/notes/640b0bfc79365d4bdfb91822`).expect(404);
-      expect(result.body).toEqual({});
+      const response = await api.get(`/api/notes/640b0bfc79365d4bdfb91822`).expect(404);
+      expect(response.body).toEqual({});
     });
 
     test('fails with status code 400 when id is invalid', async () => {
-      const result = await api.get(`/api/notes/a-b-c-d-e-f-g`).expect(400);
-      expect(result.body).toEqual({ error: 'malformatted id' });
+      const response = await api.get(`/api/notes/a-b-c-d-e-f-g`).expect(400);
+      expect(response.body).toEqual({ error: 'malformatted id' });
     });
   });
 
