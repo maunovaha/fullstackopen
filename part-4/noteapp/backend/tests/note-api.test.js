@@ -1,13 +1,19 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 const supertest = require('supertest');
+const User = require('../models/User');
 const Note = require('../models/Note');
 const helper = require('./test-helper');
 const app = require('../app');
 const api = supertest(app);
 
 
-describe('when there is initially some notes saved', () => {
+describe('when there is initially some notes saved for particular user', () => {
   beforeEach(async () => {
+    await User.deleteMany({});
+    const passwordHash = await bcrypt.hash('sekret', 10);
+    const user = new User({ username: 'root', passwordHash });
+    await user.save();
     await Note.deleteMany({});
     await Note.insertMany(helper.initialNotes);
   });
@@ -56,9 +62,11 @@ describe('when there is initially some notes saved', () => {
 
   describe('addition of a new note', () => {
     test('succeeds with valid data', async () => {
+      const users = await helper.usersInDb();
       const newNote = {
         content: 'async/await simplifies making async calls',
-        important: true
+        important: true,
+        userId: users[0].id
       };
 
       await api
@@ -70,7 +78,7 @@ describe('when there is initially some notes saved', () => {
       const notesAtEnd = await helper.notesInDb();
       expect(notesAtEnd).toHaveLength(helper.initialNotes.length + 1);
 
-      const contents = notesAtEnd.map(n => n.content);
+      const contents = notesAtEnd.map(note => note.content);
       expect(contents).toContain('async/await simplifies making async calls');
     });
 
@@ -94,7 +102,7 @@ describe('when there is initially some notes saved', () => {
       const notesAtEnd = await helper.notesInDb();
       expect(notesAtEnd).toHaveLength(helper.initialNotes.length - 1);
 
-      const contents = notesAtEnd.map(r => r.content);
+      const contents = notesAtEnd.map(note => note.content);
       expect(contents).not.toContain(noteToDelete.content);
     });
   });

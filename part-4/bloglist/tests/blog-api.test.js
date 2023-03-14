@@ -47,7 +47,7 @@ test('a valid blog can be added', async () => {
     likes: 11
   };
 
-  const response = await api
+  await api
     .post('/api/blogs')
     .send(newBlog)
     .expect(201)
