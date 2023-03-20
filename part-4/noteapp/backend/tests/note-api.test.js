@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const supertest = require('supertest');
 const User = require('../models/User');
 const Note = require('../models/Note');
@@ -62,16 +63,22 @@ describe('when there is initially some notes saved for particular user', () => {
 
   describe('addition of a new note', () => {
     test('succeeds with valid data', async () => {
-      const users = await helper.usersInDb();
+      const allUsers = await helper.usersInDb();
+      const user = allUsers[0];
+      const userForToken = {
+        username: user.username,
+        id: user.id
+      };
+      const token = jwt.sign(userForToken, process.env.JWT_SECRET, { expiresIn: 60 * 60 }); // Token expires in one hour
       const newNote = {
         content: 'async/await simplifies making async calls',
-        important: true,
-        userId: users[0].id
+        important: true
       };
 
       await api
         .post('/api/notes')
         .send(newNote)
+        .set('Authorization', 'Bearer ' + token) 
         .expect(201)
         .expect('Content-Type', /application\/json/);
 
@@ -83,9 +90,19 @@ describe('when there is initially some notes saved for particular user', () => {
     });
 
     test('fails with status code 400 when data is invalid', async () => {
+      const allUsers = await helper.usersInDb();
+      const user = allUsers[0];
+      const userForToken = {
+        username: user.username,
+        id: user.id
+      };
+      const token = jwt.sign(userForToken, process.env.JWT_SECRET, { expiresIn: 60 * 60 }); // Token expires in one hour
       const newNote = { important: true };
 
-      await api.post('/api/notes').send(newNote).expect(400);
+      await api
+        .post('/api/notes')
+        .set('Authorization', 'Bearer ' + token) 
+        .send(newNote).expect(400);
 
       const notesAtEnd = await helper.notesInDb();
       expect(notesAtEnd).toHaveLength(helper.initialNotes.length);
