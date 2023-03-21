@@ -8,7 +8,6 @@ const helper = require('./test-helper');
 const app = require('../app');
 const api = supertest(app);
 
-
 describe('when there is initially some notes saved for particular user', () => {
   beforeEach(async () => {
     await User.deleteMany({});
@@ -78,7 +77,7 @@ describe('when there is initially some notes saved for particular user', () => {
       await api
         .post('/api/notes')
         .send(newNote)
-        .set('Authorization', 'Bearer ' + token) 
+        .set('Authorization', 'Bearer ' + token)
         .expect(201)
         .expect('Content-Type', /application\/json/);
 

@@ -1,37 +1,42 @@
+const jwt = require('jsonwebtoken');
 const blogsRouter = require('express').Router();
-const logger = require('../utils/logger');
+const User = require('../models/User');
 const Blog = require('../models/Blog');
 
-blogsRouter.get('/', async (_, response) => {
+blogsRouter.get('/', async (_, response, next) => {
   try {
-    const blogs = await Blog.find({});
+    const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 });
     response.json(blogs);
-  } catch (err) {
-    logger.error(err);
+  } catch (error) {
+    next(error);
   }
 });
 
-blogsRouter.post('/', async (request, response) => {
-  const { title, author, url, likes } = request.body;
-
-  if (!title) {
-    return response.status(400).json({ error: 'title is missing' });
-  }
-
-  if (!url) {
-    return response.status(400).json({ error: 'url is missing' });
-  }
-
+blogsRouter.post('/', async (request, response, next) => {
   try {
-    const blog = new Blog({ title, author, url, likes: likes || 0 });
+    const decodedToken = jwt.verify(request.token, process.env.JWT_SECRET);
+    const { title, author, url, likes } = request.body;
+
+    if (!title) {
+      return response.status(400).json({ error: 'title is missing' });
+    }
+
+    if (!url) {
+      return response.status(400).json({ error: 'url is missing' });
+    }
+  
+    const user = await User.findById(decodedToken.id);
+    const blog = new Blog({ title, author, url, likes: likes || 0, user: user.id });
     const savedBlog = await blog.save();
+    user.blogs = user.blogs.concat(savedBlog.id);
+    await user.save();
     response.status(201).json(savedBlog);
-  } catch (err) {
-    logger.error(err);
+  } catch (error) {
+    next(error);
   }
 });
 
-blogsRouter.put('/:id', async (request, response) => {
+blogsRouter.put('/:id', async (request, response, next) => {
   const { likes } = request.body;
   const blog = { likes };
 
@@ -47,17 +52,28 @@ blogsRouter.put('/:id', async (request, response) => {
     } else {
       response.status(404).end();
     }
-  } catch (err) {
-    logger.error(err);
+  } catch (error) {
+    next(error);
   }
 });
 
-blogsRouter.delete('/:id', async (request, response) => {
+blogsRouter.delete('/:id', async (request, response, next) => {
   try {
-    await Blog.findByIdAndRemove(request.params.id);
+    const decodedToken = jwt.verify(request.token, process.env.JWT_SECRET);
+    const blog = await Blog.findById(request.params.id);
+
+    if (!blog) {
+      return response.status(404).end();
+    }
+
+    if (blog.user.toString() !== decodedToken.id) {
+      return response.status(400).json({ error: 'cannot delete a blog belonging to other user' });
+    }
+
+    await Blog.findByIdAndRemove(blog.id);
     response.status(204).end();
-  } catch (err) {
-    logger.error(err);
+  } catch (error) {
+    next(error);
   }
 });
 
