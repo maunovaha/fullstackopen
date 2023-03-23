@@ -1,6 +1,6 @@
 const Blog = ({ blog }) => {
   return (
-    <div>{blog.title} {blog.author}</div>
+    <div>- {blog.title} (Written by <em>{blog.author || 'unknown author'}</em>)</div>
   );
 };
 
