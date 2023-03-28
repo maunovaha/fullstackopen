@@ -13,16 +13,12 @@ const logout = () => {
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [alert, setAlert] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
   const [user, setUser] = useState(null);
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-
+  const handleLogin = async (username, password) => {
     const response = await loginService.login(username, password);
 
     if (response.status === 200) {
@@ -87,13 +83,7 @@ const App = () => {
         <>
           <h1>Login to application</h1>
           {alert && <p>{alert}</p>}
-          <LoginForm
-            username={username}
-            password={password}
-            onChangeUsername={setUsername}
-            onChangePassword={setPassword}
-            onLogin={handleLogin}
-          />
+          <LoginForm onLogin={handleLogin} />
         </>
       }
       {user && 
