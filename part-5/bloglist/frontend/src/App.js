@@ -13,9 +13,6 @@ const logout = () => {
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [alert, setAlert] = useState('');
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [url, setUrl] = useState('');
   const [user, setUser] = useState(null);
 
   const handleLogin = async (username, password) => {
@@ -37,16 +34,11 @@ const App = () => {
     logout();
   }
 
-  const handleCreateBlog = async (e) => {
-    e.preventDefault();
-
+  const handleCreateBlog = async (title, author, url) => {
     const response = await blogService.create(title, author, url, user.token);
 
     if (response.status === 201) {
       setAlert(`A new blog "${response.blog.title}" added!`);
-      setTitle('');
-      setAuthor('');
-      setUrl('');
       setBlogs(blogs.concat(response.blog));
     } else if (response.status === 400) {
       setAlert('Creating blog failed, did you forget to provide title and url?');
@@ -91,15 +83,7 @@ const App = () => {
           <p>Logged in as {user.name} (<a href="#" onClick={handleLogout}>Logout</a>)</p>
           <h1>Create new blog</h1>
           {alert && <p>{alert}</p>}
-          <BlogForm
-            title={title}
-            author={author}
-            url={url}
-            onChangeTitle={setTitle}
-            onChangeAuthor={setAuthor}
-            onChangeUrl={setUrl}
-            onSubmit={handleCreateBlog}
-          />
+          <BlogForm onCreateBlog={handleCreateBlog} />
           <h2>Blogs</h2>
           {blogs.map(blog =>
             <Blog key={blog.id} blog={blog} />
