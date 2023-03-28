@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import Blog from './components/Blog';
 import BlogForm from './components/BlogForm';
 import LoginForm from './components/LoginForm';
+import Toggleable from './components/Toggleable';
 import loginService from './services/LoginService';
 import blogService from './services/BlogService';
 
@@ -71,19 +72,13 @@ const App = () => {
 
   return (
     <div>
-      {!user &&
-        <>
-          <h1>Login to application</h1>
-          {alert && <p>{alert}</p>}
-          <LoginForm onLogin={handleLogin} />
-        </>
-      }
+      {!user && <LoginForm alert={alert} onLogin={handleLogin} />}
       {user && 
         <>
           <p>Logged in as {user.name} (<a href="#" onClick={handleLogout}>Logout</a>)</p>
-          <h1>Create new blog</h1>
-          {alert && <p>{alert}</p>}
-          <BlogForm onCreateBlog={handleCreateBlog} />
+          <Toggleable buttonLabel='New blog'>
+            <BlogForm alert={alert} onCreateBlog={handleCreateBlog} />
+          </Toggleable>
           <h2>Blogs</h2>
           {blogs.map(blog =>
             <Blog key={blog.id} blog={blog} />
