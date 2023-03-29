@@ -62,6 +62,22 @@ const App = () => {
     }
   }
 
+  const handleDeleteBlog = async (id) => {
+    if (!window.confirm("Are you sure you want to delete the blog?")) {
+      return;
+    }
+
+    const response = await blogService.destroy(id, user.token);
+
+    if (response.status === 204) {
+      setBlogs(blogs.filter(blog => blog.id !== id));
+    } else if (response.status === 400) {
+      setAlert('Cannot delete a blog belonging to other user.');
+    } else {
+      setAlert('Internal server error, try again later.');
+    }
+  }
+
   useEffect(() => {
     const loggedUser = window.localStorage.getItem('loggedUser');
     if (loggedUser) {
@@ -93,7 +109,7 @@ const App = () => {
           </Toggleable>
           <h2>Blogs</h2>
           {sortedBlogs.map(blog =>
-            <Blog key={blog.id} blog={blog} onLikeBlog={handleLikeBlog} />
+            <Blog key={blog.id} blog={blog} onLikeBlog={handleLikeBlog} onDeleteBlog={handleDeleteBlog} />
           )}
         </>
       }

@@ -32,5 +32,17 @@ const like = async (id, likes) => {
   }
 };
 
+const destroy = async (id, token) => {
+  try {
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    };
+    const response = await axios.delete(`${baseUrl}/${id}`, config);
+    return { status: response.status };
+  } catch (error) {
+    return { status: error.response.status };
+  }
+};
+
 // eslint-disable-next-line import/no-anonymous-default-export
-export default { getAll, create, like };
+export default { getAll, create, like, destroy };
