@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, onLikeBlog }) => {
   const [viewDetails, setViewDetails] = useState(false);
   const toggleLabel = viewDetails ? 'Hide' : 'View';
 
-  const toggleViewDetails = (e) => {
+  const handleViewDetails = () => {
     setViewDetails(!viewDetails);
   };
 
@@ -15,14 +15,14 @@ const Blog = ({ blog }) => {
           - {blog.title}
         </div>
         <div>
-          <button onClick={toggleViewDetails}>{toggleLabel}</button>
+          <button type="button" onClick={handleViewDetails}>{toggleLabel}</button>
         </div>
       </div>
       {viewDetails &&
         <ul>
           <li>Written by: {blog.author || 'unknown author'}</li>
           <li>Url: {blog.url}</li>
-          <li>Likes: {blog.likes || 0} <button>Like</button></li>
+          <li>Likes: {blog.likes || 0} <button type="button" onClick={() => onLikeBlog(blog.id)}>Like</button></li>
         </ul>
       }
     </>

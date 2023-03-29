@@ -23,5 +23,14 @@ const create = async (title, author, url, token) => {
   }
 };
 
+const like = async (id, likes) => {
+  try {
+    const response = await axios.put(`${baseUrl}/${id}`, { likes });
+    return { status: response.status, blog: response.data };
+  } catch (error) {
+    return { status: error.response.status };
+  }
+};
+
 // eslint-disable-next-line import/no-anonymous-default-export
-export default { getAll, create };
+export default { getAll, create, like };

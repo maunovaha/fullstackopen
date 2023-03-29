@@ -50,6 +50,17 @@ const App = () => {
     }
   }
 
+  const handleLikeBlog = async (id) => {
+    const likedBlog = blogs.find(blog => blog.id === id);
+    const response = await blogService.like(id, likedBlog.likes + 1);
+
+    if (response.status === 200) {
+      setBlogs(blogs.map(blog => blog.id !== id ? blog : response.blog));
+    } else {
+      setAlert('Internal server error, try again later.');
+    }
+  }
+
   useEffect(() => {
     const loggedUser = window.localStorage.getItem('loggedUser');
     if (loggedUser) {
@@ -81,7 +92,7 @@ const App = () => {
           </Toggleable>
           <h2>Blogs</h2>
           {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
+            <Blog key={blog.id} blog={blog} onLikeBlog={handleLikeBlog} />
           )}
         </>
       }
