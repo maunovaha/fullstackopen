@@ -22,7 +22,7 @@ const Blog = ({ blog, onLikeBlog }) => {
         <ul>
           <li>Written by: {blog.author || 'unknown author'}</li>
           <li>Url: {blog.url}</li>
-          <li>Likes: {blog.likes || 0} <button type="button" onClick={() => onLikeBlog(blog.id)}>Like</button></li>
+          <li>Likes: {blog.likes} <button type="button" onClick={() => onLikeBlog(blog.id)}>Like</button></li>
         </ul>
       }
     </>

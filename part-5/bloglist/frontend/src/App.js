@@ -15,6 +15,7 @@ const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [alert, setAlert] = useState('');
   const [user, setUser] = useState(null);
+  const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes);
 
   const handleLogin = async (username, password) => {
     const response = await loginService.login(username, password);
@@ -91,7 +92,7 @@ const App = () => {
             <BlogForm alert={alert} onCreateBlog={handleCreateBlog} />
           </Toggleable>
           <h2>Blogs</h2>
-          {blogs.map(blog =>
+          {sortedBlogs.map(blog =>
             <Blog key={blog.id} blog={blog} onLikeBlog={handleLikeBlog} />
           )}
         </>
