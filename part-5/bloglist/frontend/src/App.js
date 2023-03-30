@@ -34,7 +34,7 @@ const App = () => {
   const handleLogout = (e) => {
     e.preventDefault();
     logout();
-  }
+  };
 
   const handleCreateBlog = async (title, author, url) => {
     const response = await blogService.create(title, author, url, user.token);
@@ -49,7 +49,7 @@ const App = () => {
     } else {
       setAlert('Internal server error, try again later.');
     }
-  }
+  };
 
   const handleLikeBlog = async (id) => {
     const likedBlog = blogs.find(blog => blog.id === id);
@@ -60,10 +60,10 @@ const App = () => {
     } else {
       setAlert('Internal server error, try again later.');
     }
-  }
+  };
 
   const handleDeleteBlog = async (id) => {
-    if (!window.confirm("Are you sure you want to delete the blog?")) {
+    if (!window.confirm('Are you sure you want to delete the blog?')) {
       return;
     }
 
@@ -76,7 +76,7 @@ const App = () => {
     } else {
       setAlert('Internal server error, try again later.');
     }
-  }
+  };
 
   useEffect(() => {
     const loggedUser = window.localStorage.getItem('loggedUser');
@@ -101,7 +101,7 @@ const App = () => {
   return (
     <div>
       {!user && <LoginForm alert={alert} onLogin={handleLogin} />}
-      {user && 
+      {user &&
         <>
           <p>Logged in as {user.name} (<a href="#" onClick={handleLogout}>Logout</a>)</p>
           <Toggleable buttonLabel='New blog'>

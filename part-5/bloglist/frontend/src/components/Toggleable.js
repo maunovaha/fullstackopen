@@ -20,7 +20,7 @@ const Toggleable = (props) => {
         <button onClick={toggleVisibility} style={{ marginTop: '1rem' }}>Cancel</button>
       </div>
     </div>
-  )
+  );
 };
 
 Toggleable.propTypes = {
