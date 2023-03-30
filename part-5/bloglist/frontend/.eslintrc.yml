@@ -24,5 +24,3 @@ rules:
 settings:
   react:
     version: detect
-
-
