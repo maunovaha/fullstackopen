@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import PropTypes from 'prop-types';
 import Alert from './Alert';
 
 const LoginForm = ({ alert, onLogin }) => {
@@ -27,6 +28,11 @@ const LoginForm = ({ alert, onLogin }) => {
       </form>
     </>
   );
+};
+
+LoginForm.propTypes = {
+  alert: PropTypes.string.isRequired,
+  onLogin: PropTypes.func.isRequired
 };
 
 export default LoginForm;
