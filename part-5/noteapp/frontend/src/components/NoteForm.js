@@ -7,7 +7,7 @@ const NoteForm = ({ onCreateNote }) => {
     e.preventDefault();
     onCreateNote({ content: note, important: true });
     setNote('');
-  }
+  };
 
   return (
     <form onSubmit={addNote} style={{ marginBottom: '1rem' }}>
@@ -15,6 +15,6 @@ const NoteForm = ({ onCreateNote }) => {
       <button type="submit">Save</button>
     </form>
   );
-}
+};
 
 export default NoteForm;

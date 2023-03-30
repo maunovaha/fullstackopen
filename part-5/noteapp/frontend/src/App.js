@@ -30,7 +30,7 @@ const App = () => {
         setErrorMessage('');
       }, 3000);
     }
-  }
+  };
 
   const handleLogin = async (username, password) => {
     try {
@@ -45,14 +45,14 @@ const App = () => {
         setErrorMessage('');
       }, 3000);
     }
-  }
+  };
 
   const handleLogout = async (e) => {
     e.preventDefault();
 
     window.localStorage.removeItem('loggedUser');
     window.location.reload();
-  }
+  };
 
   const toggleImportanceOf = async (id) => {
     // Makes reference to note that belongs to `notes` -state variable
@@ -71,7 +71,7 @@ const App = () => {
         setErrorMessage('');
       }, 3000);
     }
-  }
+  };
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser');
@@ -98,7 +98,7 @@ const App = () => {
           setErrorMessage('');
         }, 3000);
       }
-    }
+    };
     getAllNotes();
   }, []);
 
@@ -106,13 +106,12 @@ const App = () => {
     <div>
       <h1>Notes</h1>
       <Notification message={errorMessage} />
-      
-      {!user && 
+      {!user &&
         <Toggleable buttonLabel='login'>
           <LoginForm onLogin={handleLogin} />
         </Toggleable>
       }
-      {user && 
+      {user &&
         <div>
           <p>{user.name} logged in (<a href="#" onClick={handleLogout}>Logout</a>)</p>
           <Toggleable buttonLabel='New note' ref={noteFormRef}>
@@ -134,6 +133,6 @@ const App = () => {
       <Footer />
     </div>
   );
-}
+};
 
 export default App;
