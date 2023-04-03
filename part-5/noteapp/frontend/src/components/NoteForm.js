@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 const NoteForm = ({ onCreateNote }) => {
-  const [note, setNote] = useState('A new note...');
+  const [note, setNote] = useState('');
 
   const addNote = (e) => {
     e.preventDefault();
@@ -11,7 +11,7 @@ const NoteForm = ({ onCreateNote }) => {
 
   return (
     <form onSubmit={addNote} style={{ marginBottom: '1rem' }}>
-      <input value={note} onChange={(e) => setNote(e.target.value)} />
+      <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Write a note.." />
       <button type="submit">Save</button>
     </form>
   );
