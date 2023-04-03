@@ -12,7 +12,7 @@ describe('when there is initially some notes saved for particular user', () => {
   beforeEach(async () => {
     await User.deleteMany({});
     const passwordHash = await bcrypt.hash('sekret', 10);
-    const user = new User({ username: 'root', passwordHash });
+    const user = new User({ username: 'root', name: 'Mr. Root Boi', passwordHash });
     await user.save();
     await Note.deleteMany({});
     await Note.insertMany(helper.initialNotes);

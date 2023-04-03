@@ -11,8 +11,8 @@ const NoteForm = ({ onCreateNote }) => {
 
   return (
     <form onSubmit={addNote} style={{ marginBottom: '1rem' }}>
-      <input value={note} onChange={(e) => setNote(e.target.value)} placeholder="Write a note.." />
-      <button type="submit">Save</button>
+      <input type="text" value={note} onChange={(e) => setNote(e.target.value)} placeholder="Write a note.." />
+      <input type="submit" value="Save" />
     </form>
   );
 };
