@@ -2,15 +2,15 @@ import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { act } from "react-dom/test-utils";
+import { act } from 'react-dom/test-utils';
 import Blog from './Blog';
 
 test('renders title by default', () => {
   const blog = {
-    id: "641c2806c6623a43433ca81a",
-    title: "Example blog",
-    author: "Mr. Bean",
-    url: "https://www.google.com",
+    id: '641c2806c6623a43433ca81a',
+    title: 'Example blog',
+    author: 'Mr. Bean',
+    url: 'https://www.google.com',
     likes: 1337
   };
 
@@ -30,10 +30,10 @@ test('renders title by default', () => {
 
 test('renders all information when "View" -button is click', async () => {
   const blog = {
-    id: "641c2806c6623a43433ca81a",
-    title: "Example blog",
-    author: "Mr. Bean",
-    url: "https://www.google.com",
+    id: '641c2806c6623a43433ca81a',
+    title: 'Example blog',
+    author: 'Mr. Bean',
+    url: 'https://www.google.com',
     likes: 1337
   };
 
@@ -53,10 +53,10 @@ test('renders all information when "View" -button is click', async () => {
 
 test('clicking like "Like" -button twice should call the proper callback handler', async () => {
   const blog = {
-    id: "641c2806c6623a43433ca81a",
-    title: "Example blog",
-    author: "Mr. Bean",
-    url: "https://www.google.com",
+    id: '641c2806c6623a43433ca81a',
+    title: 'Example blog',
+    author: 'Mr. Bean',
+    url: 'https://www.google.com',
     likes: 1337
   };
 

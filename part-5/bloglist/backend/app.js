@@ -24,6 +24,12 @@ app.use(middleware.tokenExtractor);
 app.use('/api/login', loginRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/blogs', middleware.userExtractor, blogsRouter); // Notice how middleware can be enabled only for the blogs router
+
+if (process.env.NODE_ENV === 'test') {
+  const e2eRouter = require('./controllers/e2e');
+  app.use('/api/e2e', e2eRouter);
+}
+
 app.use(middleware.errorHandler);
 
 module.exports = app;

@@ -1,8 +1,8 @@
 import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { act } from "react-dom/test-utils";
+import { act } from 'react-dom/test-utils';
 import BlogForm from './BlogForm';
 
 test('should call `onCreateBlog` with proper params on submit', async () => {

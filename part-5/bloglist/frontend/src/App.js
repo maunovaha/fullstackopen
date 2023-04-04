@@ -90,7 +90,7 @@ const App = () => {
       const response = await blogService.getAll();
 
       if (response.status === 200) {
-        setBlogs(response.blogs);
+        setBlogs(response.blogs.map(blog => ({ ...blog, user: blog.user.id })));
       } else {
         setAlert('Internal server error, try again later.');
       }
@@ -109,7 +109,13 @@ const App = () => {
           </Toggleable>
           <h2>Blogs</h2>
           {sortedBlogs.map(blog =>
-            <Blog key={blog.id} blog={blog} onLikeBlog={handleLikeBlog} onDeleteBlog={handleDeleteBlog} />
+            <Blog
+              key={blog.id}
+              blog={blog}
+              currentUser={user}
+              onLikeBlog={handleLikeBlog}
+              onDeleteBlog={handleDeleteBlog}
+            />
           )}
         </>
       }
