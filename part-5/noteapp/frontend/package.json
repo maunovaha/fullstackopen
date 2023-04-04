@@ -17,9 +17,10 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:e2e": "cypress run",
+    "cypress:open": "cypress open",
     "eject": "react-scripts eject",
-    "lint": "eslint .",
-    "cypress:open": "cypress open"
+    "lint": "eslint ."
   },
   "proxy": "http://localhost:3001",
   "eslintConfig": {

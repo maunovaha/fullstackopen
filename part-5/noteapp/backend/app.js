@@ -30,6 +30,12 @@ app.use(middleware.requestLogger);
 app.use('/api/login', loginRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/notes', notesRouter);
+
+if (process.env.NODE_ENV === 'test') {
+  const e2eRouter = require('./controllers/e2e');
+  app.use('/api/e2e', e2eRouter);
+}
+
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
 

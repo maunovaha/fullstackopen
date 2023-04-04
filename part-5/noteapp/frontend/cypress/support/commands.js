@@ -23,3 +23,24 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+Cypress.Commands.add('login', ({ username, password }) => {
+  cy.request('POST', `${Cypress.env('apiUrl')}/login`, {
+    username, password
+  }).then(({ body }) => {
+    localStorage.setItem('loggedUser', JSON.stringify(body));
+    cy.visit('');
+  });
+});
+
+Cypress.Commands.add('createNote', ({ content, important }) => {
+  cy.request({
+    url: `${Cypress.env('apiUrl')}/notes`,
+    method: 'POST',
+    body: { content, important },
+    headers: {
+      Authorization: `Bearer ${JSON.parse(localStorage.getItem('loggedUser')).token}`
+    }
+  });
+  cy.visit('');
+});
