@@ -1,3 +1,5 @@
+import { createSlice } from '@reduxjs/toolkit';
+
 const initialState = [
   {
     content: 'reducer defines how redux store works',
@@ -15,33 +17,22 @@ const generateId = () => {
   return Number((Math.random() * 1000000).toFixed(0));
 };
 
-const noteReducer = (state = initialState, action) => {
-  switch (action.type) {
-    case 'NEW_NOTE':
-      return [...state, action.payload];
-    case 'TOGGLE_IMPORTANCE':
-      return state.map(note => note.id === action.payload.id ? { ...note, important: !note.important } : note);
-    default:
-      return state;
-  }
-};
-
-export const createNote = (content) => {
-  return {
-    type: 'NEW_NOTE',
-    payload: {
-      content,
-      important: false,
-      id: generateId()
+const noteSlice = createSlice({
+  name: 'notes',
+  initialState,
+  reducers: {
+    createNote(state, action) {
+      // @reduxjs/toolkit uses Immer -lib internally, so we could mutate the state directly using
+      // state.push({ ... }); but I don't like it so we return new state object instead.
+      return [...state, { id: generateId(), content: action.payload, important: false }];
+    },
+    toggleImportanceOf(state, action) {
+      // Debug: console.log(JSON.parse(JSON.stringify(state)));
+      return state.map(note => note.id === action.payload ? { ...note, important: !note.important } : note);
     }
-  };
-};
+  }
+});
 
-export const toggleImportanceOf = (id) => {
-  return {
-    type: 'TOGGLE_IMPORTANCE',
-    payload: { id }
-  };
-};
+export const { createNote, toggleImportanceOf } = noteSlice.actions;
 
-export default noteReducer;
+export default noteSlice.reducer;
