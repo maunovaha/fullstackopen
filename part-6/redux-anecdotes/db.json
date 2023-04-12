@@ -1,13 +1,8 @@
 {
   "anecdotes": [
     {
-      "content": "If it hurts, do it more often",
-      "votes": 7,
-      "id": 1
-    },
-    {
       "content": "Adding manpower to a late software project makes it later!",
-      "votes": 14,
+      "votes": 28,
       "id": 2
     },
     {
@@ -17,13 +12,43 @@
     },
     {
       "content": "jeeee",
-      "votes": 0,
+      "votes": 4,
       "id": 4
     },
     {
       "content": "mmkay",
-      "votes": 0,
+      "votes": 1,
       "id": 5
+    },
+    {
+      "content": "asd",
+      "votes": 1,
+      "id": 6
+    },
+    {
+      "content": "aasdas22",
+      "votes": 1,
+      "id": 7
+    },
+    {
+      "content": "lets go",
+      "votes": 2,
+      "id": 8
+    },
+    {
+      "content": "asdas222",
+      "votes": 22,
+      "id": 9
+    },
+    {
+      "content": "one more",
+      "votes": 2,
+      "id": 10
+    },
+    {
+      "content": "loller",
+      "votes": 2,
+      "id": 11
     }
   ]
 }
