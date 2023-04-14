@@ -1,4 +1,9 @@
-const Notification = ({ message }) => {
+import { useContext } from 'react';
+import NotificationContext from '../NotificationContext';
+
+const Notification = () => {
+  const [notification, dispatch] = useContext(NotificationContext);
+
   const style = {
     border: 'solid',
     padding: 10,
@@ -6,13 +11,13 @@ const Notification = ({ message }) => {
     marginBottom: 5
   };
   
-  if (!message || message.length === 0) {
+  if (notification.length === 0) {
     return null;
   }
 
   return (
     <div style={style}>
-      {message}
+      {notification}
     </div>
   );
 };
