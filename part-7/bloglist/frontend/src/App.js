@@ -43,7 +43,9 @@ const App = () => {
       setAlert(`A new blog "${response.blog.title}" added!`);
       setBlogs(blogs.concat(response.blog));
     } else if (response.status === 400) {
-      setAlert('Creating blog failed, did you forget to provide title and url?');
+      setAlert(
+        'Creating blog failed, did you forget to provide title and url?'
+      );
     } else if (response.status === 401) {
       logout();
     } else {
@@ -52,11 +54,11 @@ const App = () => {
   };
 
   const handleLikeBlog = async (id) => {
-    const likedBlog = blogs.find(blog => blog.id === id);
+    const likedBlog = blogs.find((blog) => blog.id === id);
     const response = await blogService.like(id, likedBlog.likes + 1);
 
     if (response.status === 200) {
-      setBlogs(blogs.map(blog => blog.id !== id ? blog : response.blog));
+      setBlogs(blogs.map((blog) => (blog.id !== id ? blog : response.blog)));
     } else {
       setAlert('Internal server error, try again later.');
     }
@@ -70,7 +72,7 @@ const App = () => {
     const response = await blogService.destroy(id, user.token);
 
     if (response.status === 204) {
-      setBlogs(blogs.filter(blog => blog.id !== id));
+      setBlogs(blogs.filter((blog) => blog.id !== id));
     } else if (response.status === 400) {
       setAlert('Cannot delete a blog belonging to other user.');
     } else {
@@ -90,7 +92,9 @@ const App = () => {
       const response = await blogService.getAll();
 
       if (response.status === 200) {
-        setBlogs(response.blogs.map(blog => ({ ...blog, user: blog.user.id })));
+        setBlogs(
+          response.blogs.map((blog) => ({ ...blog, user: blog.user.id }))
+        );
       } else {
         setAlert('Internal server error, try again later.');
       }
@@ -101,14 +105,20 @@ const App = () => {
   return (
     <div>
       {!user && <LoginForm alert={alert} onLogin={handleLogin} />}
-      {user &&
+      {user && (
         <>
-          <p>Logged in as {user.name} (<a href="#" onClick={handleLogout}>Logout</a>)</p>
-          <Toggleable buttonLabel='New blog'>
+          <p>
+            Logged in as {user.name} (
+            <a href="#" onClick={handleLogout}>
+              Logout
+            </a>
+            )
+          </p>
+          <Toggleable buttonLabel="New blog">
             <BlogForm alert={alert} onCreateBlog={handleCreateBlog} />
           </Toggleable>
           <h2>Blogs</h2>
-          {sortedBlogs.map(blog =>
+          {sortedBlogs.map((blog) => (
             <Blog
               key={blog.id}
               blog={blog}
@@ -116,9 +126,9 @@ const App = () => {
               onLikeBlog={handleLikeBlog}
               onDeleteBlog={handleDeleteBlog}
             />
-          )}
+          ))}
         </>
-      }
+      )}
     </div>
   );
 };

@@ -8,9 +8,9 @@ module.exports = defineConfig({
     setupNodeEvents(on, config) {
       // implement node event listeners here
     },
-    baseUrl: 'http://localhost:3000'
+    baseUrl: 'http://localhost:3000',
   },
   env: {
-    apiUrl: 'http://localhost:3001/api'
-  }
+    apiUrl: 'http://localhost:3001/api',
+  },
 });

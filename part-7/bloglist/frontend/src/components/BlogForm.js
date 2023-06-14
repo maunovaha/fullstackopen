@@ -20,16 +20,40 @@ const BlogForm = ({ alert, onCreateBlog }) => {
       <Alert text={alert} />
       <form onSubmit={addBlog}>
         <div style={{ marginBottom: '1rem' }}>
-          <label htmlFor="title" style={{ display: 'block' }}>Title</label>
-          <input type="text" name="title" id="title" value={title} onChange={(e) => setTitle(e.target.value)} />
+          <label htmlFor="title" style={{ display: 'block' }}>
+            Title
+          </label>
+          <input
+            type="text"
+            name="title"
+            id="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
         </div>
         <div style={{ marginBottom: '1rem' }}>
-          <label htmlFor="author" style={{ display: 'block' }}>Author</label>
-          <input type="text" name="author" id="author" value={author} onChange={(e) => setAuthor(e.target.value)} />
+          <label htmlFor="author" style={{ display: 'block' }}>
+            Author
+          </label>
+          <input
+            type="text"
+            name="author"
+            id="author"
+            value={author}
+            onChange={(e) => setAuthor(e.target.value)}
+          />
         </div>
         <div style={{ marginBottom: '1rem' }}>
-          <label htmlFor="url" style={{ display: 'block' }}>Url</label>
-          <input type="text" name="url" id="url" value={url} onChange={(e) => setUrl(e.target.value)} />
+          <label htmlFor="url" style={{ display: 'block' }}>
+            Url
+          </label>
+          <input
+            type="text"
+            name="url"
+            id="url"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+          />
         </div>
         <input type="submit" value="Create" />
       </form>

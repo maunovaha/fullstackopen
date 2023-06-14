@@ -11,7 +11,7 @@ test('renders title by default', () => {
     title: 'Example blog',
     author: 'Mr. Bean',
     url: 'https://www.google.com',
-    likes: 1337
+    likes: 1337,
   };
 
   render(<Blog blog={blog} />);
@@ -34,7 +34,7 @@ test('renders all information when "View" -button is click', async () => {
     title: 'Example blog',
     author: 'Mr. Bean',
     url: 'https://www.google.com',
-    likes: 1337
+    likes: 1337,
   };
 
   render(<Blog blog={blog} />);
@@ -57,7 +57,7 @@ test('clicking like "Like" -button twice should call the proper callback handler
     title: 'Example blog',
     author: 'Mr. Bean',
     url: 'https://www.google.com',
-    likes: 1337
+    likes: 1337,
   };
 
   const likeBlogHandler = jest.fn();

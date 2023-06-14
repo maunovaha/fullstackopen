@@ -17,14 +17,16 @@ const Toggleable = (props) => {
       </div>
       <div style={showWhenVisible}>
         {props.children}
-        <button onClick={toggleVisibility} style={{ marginTop: '1rem' }}>Cancel</button>
+        <button onClick={toggleVisibility} style={{ marginTop: '1rem' }}>
+          Cancel
+        </button>
       </div>
     </div>
   );
 };
 
 Toggleable.propTypes = {
-  buttonLabel: PropTypes.string.isRequired
+  buttonLabel: PropTypes.string.isRequired,
 };
 
 export default Toggleable;

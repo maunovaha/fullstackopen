@@ -11,23 +11,32 @@ const Blog = ({ blog, currentUser, onLikeBlog, onDeleteBlog }) => {
   return (
     <div className="blog">
       <div style={{ display: 'flex', marginBottom: '0.25rem' }}>
-        <div style={{ paddingRight: '1rem' }}>
-          - {blog.title}
-        </div>
+        <div style={{ paddingRight: '1rem' }}>- {blog.title}</div>
         <div>
-          <button type="button" onClick={handleViewDetails}>{toggleLabel}</button>
+          <button type="button" onClick={handleViewDetails}>
+            {toggleLabel}
+          </button>
         </div>
       </div>
-      {viewDetails &&
+      {viewDetails && (
         <ul>
           <li>Written by: {blog.author || 'unknown author'}</li>
           <li>Url: {blog.url}</li>
-          <li>Likes: {blog.likes} <button type="button" onClick={() => onLikeBlog(blog.id)}>Like</button></li>
-          {blog.user && blog.user === currentUser.id &&
-            <li><button type="button" onClick={() => onDeleteBlog(blog.id)}>Delete</button></li>
-          }
+          <li>
+            Likes: {blog.likes}{' '}
+            <button type="button" onClick={() => onLikeBlog(blog.id)}>
+              Like
+            </button>
+          </li>
+          {blog.user && blog.user === currentUser.id && (
+            <li>
+              <button type="button" onClick={() => onDeleteBlog(blog.id)}>
+                Delete
+              </button>
+            </li>
+          )}
         </ul>
-      }
+      )}
     </div>
   );
 };

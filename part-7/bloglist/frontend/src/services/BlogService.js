@@ -14,7 +14,7 @@ const getAll = async () => {
 const create = async (title, author, url, token) => {
   try {
     const config = {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
     };
     const response = await axios.post(baseUrl, { title, url, author }, config);
     return { status: response.status, blog: response.data };
@@ -35,7 +35,7 @@ const like = async (id, likes) => {
 const destroy = async (id, token) => {
   try {
     const config = {
-      headers: { Authorization: `Bearer ${token}` }
+      headers: { Authorization: `Bearer ${token}` },
     };
     const response = await axios.delete(`${baseUrl}/${id}`, config);
     return { status: response.status };
