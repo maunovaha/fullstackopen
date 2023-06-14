@@ -5,6 +5,8 @@ import LoginForm from './components/LoginForm';
 import Toggleable from './components/Toggleable';
 import loginService from './services/LoginService';
 import blogService from './services/BlogService';
+import { useDispatch } from 'react-redux';
+import { setNotification } from './reducers/notificationReducer';
 
 const logout = () => {
   window.localStorage.removeItem('loggedUser');
@@ -12,8 +14,8 @@ const logout = () => {
 };
 
 const App = () => {
+  const dispatch = useDispatch();
   const [blogs, setBlogs] = useState([]);
-  const [alert, setAlert] = useState('');
   const [user, setUser] = useState(null);
   const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes);
 
@@ -21,13 +23,13 @@ const App = () => {
     const response = await loginService.login(username, password);
 
     if (response.status === 200) {
-      setAlert('');
+      dispatch(setNotification(''));
       setUser(response.user);
       window.localStorage.setItem('loggedUser', JSON.stringify(response.user));
     } else if (response.status === 401) {
-      setAlert('Invalid username or password.');
+      dispatch(setNotification('Invalid username or password.'));
     } else {
-      setAlert('Internal server error, try again later.');
+      dispatch(setNotification('Internal server error, try again later.'));
     }
   };
 
@@ -40,16 +42,14 @@ const App = () => {
     const response = await blogService.create(title, author, url, user.token);
 
     if (response.status === 201) {
-      setAlert(`A new blog "${response.blog.title}" added!`);
+      dispatch(setNotification(`A new blog "${response.blog.title}" added!`));
       setBlogs(blogs.concat(response.blog));
     } else if (response.status === 400) {
-      setAlert(
-        'Creating blog failed, did you forget to provide title and url?'
-      );
+      dispatch(setNotification('Creating blog failed, did you forget to provide title and url?'));
     } else if (response.status === 401) {
       logout();
     } else {
-      setAlert('Internal server error, try again later.');
+      dispatch(setNotification('Internal server error, try again later.'));
     }
   };
 
@@ -60,7 +60,7 @@ const App = () => {
     if (response.status === 200) {
       setBlogs(blogs.map((blog) => (blog.id !== id ? blog : response.blog)));
     } else {
-      setAlert('Internal server error, try again later.');
+      dispatch(setNotification('Internal server error, try again later.'));
     }
   };
 
@@ -74,9 +74,9 @@ const App = () => {
     if (response.status === 204) {
       setBlogs(blogs.filter((blog) => blog.id !== id));
     } else if (response.status === 400) {
-      setAlert('Cannot delete a blog belonging to other user.');
+      dispatch(setNotification('Cannot delete a blog belonging to other user.'));
     } else {
-      setAlert('Internal server error, try again later.');
+      dispatch(setNotification('Internal server error, try again later.'));
     }
   };
 
@@ -96,7 +96,7 @@ const App = () => {
           response.blogs.map((blog) => ({ ...blog, user: blog.user.id }))
         );
       } else {
-        setAlert('Internal server error, try again later.');
+        dispatch(setNotification('Internal server error, try again later.'));
       }
     };
     setupBlogs();
@@ -104,7 +104,7 @@ const App = () => {
 
   return (
     <div>
-      {!user && <LoginForm alert={alert} onLogin={handleLogin} />}
+      {!user && <LoginForm onLogin={handleLogin} />}
       {user && (
         <>
           <p>
@@ -115,7 +115,7 @@ const App = () => {
             )
           </p>
           <Toggleable buttonLabel="New blog">
-            <BlogForm alert={alert} onCreateBlog={handleCreateBlog} />
+            <BlogForm onCreateBlog={handleCreateBlog} />
           </Toggleable>
           <h2>Blogs</h2>
           {sortedBlogs.map((blog) => (

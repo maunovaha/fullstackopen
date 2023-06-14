@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Alert from './Alert';
 
-const BlogForm = ({ alert, onCreateBlog }) => {
+const BlogForm = ({ onCreateBlog }) => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
@@ -17,7 +17,7 @@ const BlogForm = ({ alert, onCreateBlog }) => {
   return (
     <>
       <h1>Create new blog</h1>
-      <Alert text={alert} />
+      <Alert />
       <form onSubmit={addBlog}>
         <div style={{ marginBottom: '1rem' }}>
           <label htmlFor="title" style={{ display: 'block' }}>

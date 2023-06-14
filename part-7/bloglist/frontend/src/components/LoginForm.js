@@ -2,7 +2,7 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import Alert from './Alert';
 
-const LoginForm = ({ alert, onLogin }) => {
+const LoginForm = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -14,7 +14,7 @@ const LoginForm = ({ alert, onLogin }) => {
   return (
     <>
       <h1>Login to application</h1>
-      <Alert text={alert} />
+      <Alert />
       <form onSubmit={login}>
         <div style={{ marginBottom: '1rem' }}>
           <label htmlFor="username" style={{ display: 'block' }}>
@@ -47,7 +47,6 @@ const LoginForm = ({ alert, onLogin }) => {
 };
 
 LoginForm.propTypes = {
-  alert: PropTypes.string.isRequired,
   onLogin: PropTypes.func.isRequired,
 };
 
