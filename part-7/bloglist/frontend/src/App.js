@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import Blog from './components/Blog';
+import BlogList from './components/BlogList';
 import BlogForm from './components/BlogForm';
 import LoginForm from './components/LoginForm';
 import Toggleable from './components/Toggleable';
 import loginService from './services/LoginService';
-import blogService from './services/BlogService';
 import { useDispatch } from 'react-redux';
+import { initBlogs } from './reducers/blogReducer';
 import { setNotification } from './reducers/notificationReducer';
 
 const logout = () => {
@@ -15,9 +15,7 @@ const logout = () => {
 
 const App = () => {
   const dispatch = useDispatch();
-  const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
-  const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes);
 
   const handleLogin = async (username, password) => {
     const response = await loginService.login(username, password);
@@ -38,48 +36,6 @@ const App = () => {
     logout();
   };
 
-  const handleCreateBlog = async (title, author, url) => {
-    const response = await blogService.create(title, author, url, user.token);
-
-    if (response.status === 201) {
-      dispatch(setNotification(`A new blog "${response.blog.title}" added!`));
-      setBlogs(blogs.concat(response.blog));
-    } else if (response.status === 400) {
-      dispatch(setNotification('Creating blog failed, did you forget to provide title and url?'));
-    } else if (response.status === 401) {
-      logout();
-    } else {
-      dispatch(setNotification('Internal server error, try again later.'));
-    }
-  };
-
-  const handleLikeBlog = async (id) => {
-    const likedBlog = blogs.find((blog) => blog.id === id);
-    const response = await blogService.like(id, likedBlog.likes + 1);
-
-    if (response.status === 200) {
-      setBlogs(blogs.map((blog) => (blog.id !== id ? blog : response.blog)));
-    } else {
-      dispatch(setNotification('Internal server error, try again later.'));
-    }
-  };
-
-  const handleDeleteBlog = async (id) => {
-    if (!window.confirm('Are you sure you want to delete the blog?')) {
-      return;
-    }
-
-    const response = await blogService.destroy(id, user.token);
-
-    if (response.status === 204) {
-      setBlogs(blogs.filter((blog) => blog.id !== id));
-    } else if (response.status === 400) {
-      dispatch(setNotification('Cannot delete a blog belonging to other user.'));
-    } else {
-      dispatch(setNotification('Internal server error, try again later.'));
-    }
-  };
-
   useEffect(() => {
     const loggedUser = window.localStorage.getItem('loggedUser');
     if (loggedUser) {
@@ -88,18 +44,7 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    const setupBlogs = async () => {
-      const response = await blogService.getAll();
-
-      if (response.status === 200) {
-        setBlogs(
-          response.blogs.map((blog) => ({ ...blog, user: blog.user.id }))
-        );
-      } else {
-        dispatch(setNotification('Internal server error, try again later.'));
-      }
-    };
-    setupBlogs();
+    dispatch(initBlogs());
   }, []);
 
   return (
@@ -115,18 +60,9 @@ const App = () => {
             )
           </p>
           <Toggleable buttonLabel="New blog">
-            <BlogForm onCreateBlog={handleCreateBlog} />
+            <BlogForm user={user} />
           </Toggleable>
-          <h2>Blogs</h2>
-          {sortedBlogs.map((blog) => (
-            <Blog
-              key={blog.id}
-              blog={blog}
-              currentUser={user}
-              onLikeBlog={handleLikeBlog}
-              onDeleteBlog={handleDeleteBlog}
-            />
-          ))}
+          <BlogList user={user} />
         </>
       )}
     </div>

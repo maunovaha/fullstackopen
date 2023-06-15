@@ -1,14 +1,17 @@
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { createBlog } from '../reducers/blogReducer';
 import Alert from './Alert';
 
-const BlogForm = ({ onCreateBlog }) => {
+const BlogForm = ({ user }) => {
+  const dispatch = useDispatch();
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
 
-  const addBlog = (e) => {
+  const handleCreateBlog = (e) => {
     e.preventDefault();
-    onCreateBlog(title, author, url);
+    dispatch(createBlog(title, author, url, user.token));
     setTitle('');
     setAuthor('');
     setUrl('');
@@ -18,7 +21,7 @@ const BlogForm = ({ onCreateBlog }) => {
     <>
       <h1>Create new blog</h1>
       <Alert />
-      <form onSubmit={addBlog}>
+      <form onSubmit={handleCreateBlog}>
         <div style={{ marginBottom: '1rem' }}>
           <label htmlFor="title" style={{ display: 'block' }}>
             Title
