@@ -14,10 +14,20 @@ const blogSlice = createSlice({
     setBlogs(state, action) {
       return [...action.payload];
     },
+    // eslint-disable-next-line
+    addLikeToBlog(state, action) {
+      return state.map(blog =>
+        ({ ...blog, likes: blog.id === action.payload ? blog.likes + 1 : blog.likes })
+      );
+    },
+    // eslint-disable-next-line
+    deleteBlog(state, action) {
+      return state.filter((blog) => blog.id !== action.payload);
+    },
   },
 });
 
-export const { addBlog, setBlogs } = blogSlice.actions;
+export const { addBlog, setBlogs, addLikeToBlog, deleteBlog } = blogSlice.actions;
 
 export const initBlogs = () => {
   return async (dispatch) => {
@@ -43,6 +53,32 @@ export const createBlog = (title, author, url, token) => {
     } else if (response.status === 401) {
       // TODO: How to dispatch the logout?
       // logout();
+    } else {
+      dispatch(setNotification('Internal server error, try again later.'));
+    }
+  };
+};
+
+export const likeBlog = (blog) => {
+  return async (dispatch) => {
+    const response = await blogService.like(blog.id, blog.likes + 1);
+
+    if (response.status === 200) {
+      dispatch(addLikeToBlog(response.blog.id));
+    } else {
+      dispatch(setNotification('Internal server error, try again later.'));
+    }
+  };
+};
+
+export const destroyBlog = (id, token) => {
+  return async (dispatch) => {
+    const response = await blogService.destroy(id, token);
+
+    if (response.status === 204) {
+      dispatch(deleteBlog(id));
+    } else if (response.status === 400) {
+      dispatch(setNotification('Cannot delete a blog belonging to other user.'));
     } else {
       dispatch(setNotification('Internal server error, try again later.'));
     }
