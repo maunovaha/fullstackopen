@@ -1,35 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import BlogList from './components/BlogList';
 import BlogForm from './components/BlogForm';
 import LoginForm from './components/LoginForm';
 import Toggleable from './components/Toggleable';
 import loginService from './services/LoginService';
-import { useDispatch } from 'react-redux';
+import { logout, setUser } from './reducers/userReducer';
 import { initBlogs } from './reducers/blogReducer';
 import { setNotification } from './reducers/notificationReducer';
 
-const logout = () => {
-  window.localStorage.removeItem('loggedUser');
-  window.location.reload();
-};
-
 const App = () => {
   const dispatch = useDispatch();
-  const [user, setUser] = useState(null);
-
-  const handleLogin = async (username, password) => {
-    const response = await loginService.login(username, password);
-
-    if (response.status === 200) {
-      dispatch(setNotification(''));
-      setUser(response.user);
-      window.localStorage.setItem('loggedUser', JSON.stringify(response.user));
-    } else if (response.status === 401) {
-      dispatch(setNotification('Invalid username or password.'));
-    } else {
-      dispatch(setNotification('Internal server error, try again later.'));
-    }
-  };
+  const user = useSelector(state => state.user);
 
   const handleLogout = (e) => {
     e.preventDefault();
@@ -38,18 +20,17 @@ const App = () => {
 
   useEffect(() => {
     const loggedUser = window.localStorage.getItem('loggedUser');
-    if (loggedUser) {
-      setUser(JSON.parse(loggedUser));
-    }
-  }, []);
 
-  useEffect(() => {
+    if (loggedUser) {
+      dispatch(setUser(JSON.parse(loggedUser)));
+    }
+
     dispatch(initBlogs());
   }, []);
 
   return (
     <div>
-      {!user && <LoginForm onLogin={handleLogin} />}
+      {!user && <LoginForm />}
       {user && (
         <>
           <p>
@@ -60,9 +41,9 @@ const App = () => {
             )
           </p>
           <Toggleable buttonLabel="New blog">
-            <BlogForm user={user} />
+            <BlogForm />
           </Toggleable>
-          <BlogList user={user} />
+          <BlogList />
         </>
       )}
     </div>

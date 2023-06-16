@@ -10,9 +10,10 @@ const selectSortedBlogs = createSelector(
   (blogs) => blogs.toSorted((a, b) => b.likes - a.likes)
 );
 
-const BlogList = ({ user }) => {
+const BlogList = () => {
   const dispatch = useDispatch();
   const blogs = useSelector(selectSortedBlogs);
+  const user = useSelector(state => state.user);
 
   const handleLikeBlog = async (id) => {
     const blog = blogs.find((blog) => blog.id === id);
