@@ -13,7 +13,7 @@ const selectSortedBlogs = createSelector(
 const BlogList = () => {
   const dispatch = useDispatch();
   const blogs = useSelector(selectSortedBlogs);
-  const user = useSelector(state => state.user);
+  const user = useSelector(state => state.login);
 
   const handleLikeBlog = async (id) => {
     const blog = blogs.find((blog) => blog.id === id);
@@ -21,10 +21,9 @@ const BlogList = () => {
   };
 
   const handleDeleteBlog = async (id) => {
-    if (!window.confirm('Are you sure you want to delete the blog?')) {
-      return;
+    if (window.confirm('Are you sure you want to delete the blog?')) {
+      dispatch(destroyBlog(id, user.token));
     }
-    dispatch(destroyBlog(id, user.token));
   };
 
   return (

@@ -1,39 +1,30 @@
 import { createSlice } from '@reduxjs/toolkit';
-import loginService from '../services/LoginService';
+import userService from '../services/UserService';
 import { setNotification } from './notificationReducer';
 
 const userSlice = createSlice({
   name: 'user',
-  initialState: null,
+  initialState: [],
   reducers: {
     // eslint-disable-next-line
-    setUser(state, action) {
-      return { ...action.payload };
+    setUsers(state, action) {
+      return [...action.payload];
     },
   },
 });
 
-export const { setUser } = userSlice.actions;
+export const { setUsers } = userSlice.actions;
 
-export const login = (username, password) => {
+export const initUsers = () => {
   return async (dispatch) => {
-    const response = await loginService.login(username, password);
+    const response = await userService.getAll();
 
     if (response.status === 200) {
-      dispatch(setNotification(''));
-      dispatch(setUser(response.user));
-      window.localStorage.setItem('loggedUser', JSON.stringify(response.user));
-    } else if (response.status === 401) {
-      dispatch(setNotification('Invalid username or password.'));
+      dispatch(setUsers(response.users));
     } else {
       dispatch(setNotification('Internal server error, try again later.'));
     }
   };
-};
-
-export const logout = () => {
-  window.localStorage.removeItem('loggedUser');
-  window.location.reload();
 };
 
 export default userSlice.reducer;
