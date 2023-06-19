@@ -5,7 +5,7 @@ import BlogList from '../BlogList';
 import BlogForm from '../BlogForm';
 import Toggleable from '../Toggleable';
 
-const BlogPage = () => {
+const BlogListPage = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -22,6 +22,4 @@ const BlogPage = () => {
   );
 };
 
-export default BlogPage;
-
-
+export default BlogListPage;

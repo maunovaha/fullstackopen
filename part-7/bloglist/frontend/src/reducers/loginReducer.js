@@ -33,7 +33,6 @@ export const login = (username, password) => {
 
 export const logout = () => {
   window.localStorage.removeItem('loggedUser');
-  window.location.reload();
 };
 
 export default loginSlice.reducer;
