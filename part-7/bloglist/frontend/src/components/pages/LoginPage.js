@@ -1,11 +1,9 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { login } from '../../reducers/loginReducer';
 import Alert from '../Alert';
 
 const LoginPage = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -13,7 +11,6 @@ const LoginPage = () => {
   const handleLogin = (e) => {
     e.preventDefault();
     dispatch(login(username, password));
-    navigate('/');
   };
 
   return (

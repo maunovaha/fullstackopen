@@ -1,6 +1,5 @@
 import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
-import { Navigate } from 'react-router-dom';
+import { useParams, Navigate } from 'react-router-dom';
 
 const UserProfilePage = () => {
   const { id } = useParams();
@@ -13,7 +12,7 @@ const UserProfilePage = () => {
 
   return (
     <>
-      <h2>Arto Hellas</h2>
+      <h2>{user.name}</h2>
       <p><strong>Added blogs</strong></p>
       <ul>
         {user.blogs.map((blog) => (

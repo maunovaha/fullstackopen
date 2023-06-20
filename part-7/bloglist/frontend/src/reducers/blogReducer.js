@@ -34,7 +34,7 @@ export const initBlogs = () => {
     const response = await blogService.getAll();
 
     if (response.status === 200) {
-      dispatch(setBlogs(response.blogs.map((blog) => ({ ...blog, user: blog.user.id }))));
+      dispatch(setBlogs(response.blogs));
     } else {
       dispatch(setNotification('Internal server error, try again later.'));
     }

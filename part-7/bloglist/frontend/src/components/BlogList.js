@@ -1,7 +1,6 @@
-import Blog from '../components/Blog';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { createSelector } from '@reduxjs/toolkit';
-import { likeBlog, destroyBlog } from '../reducers/blogReducer';
+import { Link } from 'react-router-dom';
 
 // To prevent unnecessary rerenders, I need to use `createSelector` so that the
 // sorted blogs are being memoized.
@@ -11,34 +10,14 @@ const selectSortedBlogs = createSelector(
 );
 
 const BlogList = () => {
-  const dispatch = useDispatch();
   const blogs = useSelector(selectSortedBlogs);
-  const user = useSelector(state => state.login);
-
-  const handleLikeBlog = async (id) => {
-    const blog = blogs.find((blog) => blog.id === id);
-    dispatch(likeBlog(blog));
-  };
-
-  const handleDeleteBlog = async (id) => {
-    if (window.confirm('Are you sure you want to delete the blog?')) {
-      dispatch(destroyBlog(id, user.token));
-    }
-  };
 
   return (
-    <>
-      <h2>Blogs</h2>
+    <ul>
       {blogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          currentUser={user}
-          onLikeBlog={handleLikeBlog}
-          onDeleteBlog={handleDeleteBlog}
-        />
+        <li key={blog.id}><Link to={`/blogs/${blog.id}`}>{blog.url}</Link></li>
       ))}
-    </>
+    </ul>
   );
 };
 
