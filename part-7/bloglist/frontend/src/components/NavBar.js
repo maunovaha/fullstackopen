@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { logout } from '../reducers/loginReducer';
 
 const NavBar = ({ user }) => {
@@ -14,13 +14,17 @@ const NavBar = ({ user }) => {
   };
 
   return (
-    <p>
-      Logged in as {user.name} (
-      <a href="#" onClick={handleLogout}>
-        Logout
-      </a>
-      )
-    </p>
+    <div style={{ marginBottom: '1rem' }}>
+      <Link to="/" style={{ display: 'inline-block', paddingRight: '0.5rem' }}>Blogs</Link>
+      <Link to="/users" style={{ display: 'inline-block', paddingRight: '0.5rem' }}>Users</Link>
+      <div style={{ display: 'inline-block' }}>
+        Logged in as {user.name} (
+        <a href="#" onClick={handleLogout}>
+          Logout
+        </a>
+        )
+      </div>
+    </div>
   );
 };
 
