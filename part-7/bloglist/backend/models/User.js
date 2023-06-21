@@ -19,6 +19,13 @@ const userSchema = new mongoose.Schema({
 
 userSchema.set('toJSON', {
   transform: (document, returnedObject) => {
+    // The `transform` block might be called multiple times when e.g. returning a blog from API
+    // that contains multiple comments from the same user. Consequently, we do the conversion only
+    // once to avoid getting the `Cannot read properties of undefined (reading 'toString')` -error.
+    if (!returnedObject.hasOwnProperty('_id')) {
+      return;
+    }
+
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
     delete returnedObject.__v;

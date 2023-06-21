@@ -1,11 +1,24 @@
 const jwt = require('jsonwebtoken');
 const blogsRouter = require('express').Router();
+// When a model, such as User, is imported in this file the mongoose creates
+// a new collection for it in case it's missing. However, I don't think this
+// logic is very transparent, but in case you are getting MissingSchemaError
+// you might have forgotten to import your model.
 const User = require('../models/User');
 const Blog = require('../models/Blog');
+const Comment = require('../models/Comment');
 
 blogsRouter.get('/', async (_, response, next) => {
   try {
-    const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 });
+    const blogs = await Blog.find({})
+      .populate({
+        path: 'comments',
+        populate: {
+          path: 'user',
+          select: 'name'
+        },
+        select: 'message'
+      });
     response.json(blogs);
   } catch (error) {
     next(error);
@@ -31,6 +44,27 @@ blogsRouter.post('/', async (request, response, next) => {
     user.blogs = user.blogs.concat(savedBlog.id);
     await user.save();
     response.status(201).json(savedBlog);
+  } catch (error) {
+    next(error);
+  }
+});
+
+blogsRouter.post('/:id/comments', async (request, response, next) => {
+  try {
+    const decodedToken = jwt.verify(request.token, process.env.JWT_SECRET);
+    const { message } = request.body;
+
+    if (!message) {
+      return response.status(400).json({ error: 'message is missing' });
+    }
+
+    const user = await User.findById(decodedToken.id);
+    const blog = await Blog.findById(request.params.id);
+    const comment = new Comment({ message, user: user.id, blog: blog.id });
+    const savedComment = await comment.save();
+    blog.comments = blog.comments.concat(savedComment.id);
+    await blog.save();
+    response.status(201).json(savedComment);
   } catch (error) {
     next(error);
   }
