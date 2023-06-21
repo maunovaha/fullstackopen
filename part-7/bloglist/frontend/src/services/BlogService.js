@@ -23,6 +23,18 @@ const create = async (title, author, url, token) => {
   }
 };
 
+const comment = async (id, message, token) => {
+  try {
+    const config = {
+      headers: { Authorization: `Bearer ${token}` },
+    };
+    const response = await axios.post(`${baseUrl}/${id}/comments`, { message }, config);
+    return { status: response.status, comment: response.data };
+  } catch (error) {
+    return { status: error.response.status };
+  }
+};
+
 const like = async (id, likes) => {
   try {
     const response = await axios.put(`${baseUrl}/${id}`, { likes });
@@ -44,4 +56,4 @@ const destroy = async (id, token) => {
   }
 };
 
-export default { getAll, create, like, destroy };
+export default { getAll, create, comment, like, destroy };

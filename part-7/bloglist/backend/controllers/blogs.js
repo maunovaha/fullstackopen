@@ -65,7 +65,8 @@ blogsRouter.post('/:id/comments', async (request, response, next) => {
     const savedComment = await comment.save();
     blog.comments = blog.comments.concat(savedComment.id);
     await blog.save();
-    response.status(201).json(savedComment);
+    const latestComment = await Comment.findById(savedComment.id).populate('user', { name: 1 });
+    response.status(201).json(latestComment);
   } catch (error) {
     next(error);
   }

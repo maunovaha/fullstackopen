@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, Navigate } from 'react-router-dom';
 import { initBlogs, likeBlog } from '../../reducers/blogReducer';
+import CommentForm from '../CommentForm';
 
 const BlogPage = () => {
   const [loading, setLoading] = useState(true);
@@ -45,6 +46,13 @@ const BlogPage = () => {
         </button>
       </p>
       <p>Added by {blog.user.name}</p>
+      <h3>Comments</h3>
+      <CommentForm blog={blog} />
+      <ul>
+        {blog.comments.map((comment) => (
+          <li key={comment.id}>{comment.message} (<em>Sent by: {comment.user.name}</em>)</li>
+        ))}
+      </ul>
     </>
   );
 };

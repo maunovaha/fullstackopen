@@ -11,6 +11,12 @@ const blogSlice = createSlice({
       return [...state, { ...action.payload }];
     },
     // eslint-disable-next-line
+    addCommentToBlog(state, action) {
+      return state.map(blog =>
+        ({ ...blog, comments: blog.id === action.payload.blog ? [...blog.comments, { ...action.payload }] : blog.comments })
+      );
+    },
+    // eslint-disable-next-line
     setBlogs(state, action) {
       return [...action.payload];
     },
@@ -27,7 +33,7 @@ const blogSlice = createSlice({
   },
 });
 
-export const { addBlog, setBlogs, addLikeToBlog, deleteBlog } = blogSlice.actions;
+export const { addBlog, addCommentToBlog, setBlogs, addLikeToBlog, deleteBlog } = blogSlice.actions;
 
 export const initBlogs = () => {
   return async (dispatch) => {
@@ -50,6 +56,24 @@ export const createBlog = (title, author, url, token) => {
       dispatch(addBlog(response.blog));
     } else if (response.status === 400) {
       dispatch(setNotification('Creating blog failed, did you forget to provide title and url?'));
+    } else if (response.status === 401) {
+      // TODO: How to dispatch the logout?
+      // logout();
+    } else {
+      dispatch(setNotification('Internal server error, try again later.'));
+    }
+  };
+};
+
+export const createComment = (id, message, token) => {
+  return async (dispatch) => {
+    const response = await blogService.comment(id, message, token);
+
+    if (response.status === 201) {
+      dispatch(setNotification(`A new comment added!`));
+      dispatch(addCommentToBlog(response.comment));
+    } else if (response.status === 400) {
+      dispatch(setNotification('Commenting blog failed, did you forget to provide a message?'));
     } else if (response.status === 401) {
       // TODO: How to dispatch the logout?
       // logout();
