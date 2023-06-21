@@ -11,6 +11,7 @@ const Comment = require('../models/Comment');
 blogsRouter.get('/', async (_, response, next) => {
   try {
     const blogs = await Blog.find({})
+      .populate('user', { username: 1, name: 1 })
       .populate({
         path: 'comments',
         populate: {
