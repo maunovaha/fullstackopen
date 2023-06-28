@@ -76,7 +76,7 @@ const resolvers = {
       const byPhone = (person) => args.phone === 'YES' ? person.phone : !person.phone;
       return persons.filter(byPhone);
     },
-    findPerson: (root, args) => persons.find(p => p.name === args.name);
+    findPerson: (root, args) => persons.find(p => p.name === args.name)
   },
   Mutation: {
     addPerson(root, args) {
