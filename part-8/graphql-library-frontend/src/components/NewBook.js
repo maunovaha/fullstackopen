@@ -10,7 +10,7 @@ const NewBook = (props) => {
   const [genres, setGenres] = useState([]);
   const [addBook] = useMutation(ADD_BOOK, {
     onError: (error) => {
-      console.error(error.graphQLErrors[0].message);
+      console.log(error.graphQLErrors[0].message);
     }
   });
 
