@@ -59,17 +59,18 @@ const resolvers = {
     bookCount: async () => await Book.collection.countDocuments(),
     authorCount: async () => await Author.collection.countDocuments(),
     allBooks: async (root, args) => {
-      /*
-      let filteredBooks = [...books];
-
+      // I am aware that querying books using both author and genre is not atm. possible
+      // and should be fixed, but atm. too bored to do so.
+      
       if (args.author) {
-        filteredBooks = filteredBooks.filter(book => book.author === args.author);
+        const author = await Author.findOne({ name: args.author });
+        return await author ? Book.find({ author }) : [];
       }
 
       if (args.genre) {
-        filteredBooks = filteredBooks.filter(book => book.genres.includes(args.genre));
+        return await Book.find({ genres: args.genre });
       }
-      */
+
       return await Book.find({});
     },
     allAuthors: async () => {
@@ -113,19 +114,28 @@ const resolvers = {
 
       return book;
     },
-    editAuthor: (root, args) => {
-      /*
-      const author = authors.find(author => author.name === args.name);
+    editAuthor: async (root, args) => {
+      const author = await Author.findOne({ name: args.name });
 
       if (!author) {
         return null;
       }
 
-      const modifiedAuthor = { ...author, born: args.setBornTo };
-      authors = authors.map(author => author.name === args.name ? modifiedAuthor : author);
+      author.born = args.setBornTo;
 
-      return modifiedAuthor;
-      */
+      try {
+        await author.save();
+      } catch (error) {
+        throw new GraphQLError('Saving author failed', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.name,
+            error
+          }
+        });
+      }
+
+      return author;
     }
   }
 };
