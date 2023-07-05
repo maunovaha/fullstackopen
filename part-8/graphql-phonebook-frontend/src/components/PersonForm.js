@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { CREATE_PERSON } from '../queries';
+import { CREATE_PERSON, ALL_PERSONS } from '../queries';
 
 const PersonForm = ({ persons, setError }) => {
   const [name, setName] = useState('');
@@ -10,6 +10,15 @@ const PersonForm = ({ persons, setError }) => {
   const [createPerson] = useMutation(CREATE_PERSON, {
     onError: (error) => {
       setError(error.graphQLErrors[0].message);
+    },
+    update: (cache, response) => {
+      // Apollo client cache needs to be updated when adding a new person,
+      // so that they appear on the list without refreshing the page.
+      cache.updateQuery({ query: ALL_PERSONS }, ({ allPersons }) => {
+        return {
+          allPersons: allPersons.concat(response.data.addPerson)
+        }
+      })
     }
   });
 
@@ -22,7 +31,14 @@ const PersonForm = ({ persons, setError }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    createPerson({ variables: { name, street, city, phone } });
+    createPerson({
+      variables: {
+        name,
+        street,
+        city,
+        phone: phone.length > 0 ? phone : undefined
+      } 
+    });
     setName('');
     setPhone('');
     setStreet('');

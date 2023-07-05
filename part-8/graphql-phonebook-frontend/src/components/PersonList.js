@@ -25,7 +25,7 @@ const PersonList = ({ persons }) => {
     <div>
       <h2>Persons</h2>
       {persons.map(p => 
-        <div key={p.name}>
+        <div key={p.id}>
           {p.name} {p.phone ? p.phone : <em>(phone number not known)</em>}
           <button onClick={() => setNameToSearch(p.name)}>
             Show address
