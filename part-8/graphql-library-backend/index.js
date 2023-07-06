@@ -88,14 +88,14 @@ const resolvers = {
 
       if (args.author) {
         const author = await Author.findOne({ name: args.author });
-        return await author ? Book.find({ author }) : [];
+        return await author ? Book.find({ author }).populate('author') : [];
       }
 
       if (args.genre) {
-        return await Book.find({ genres: args.genre });
+        return await Book.find({ genres: args.genre }).populate('author');
       }
 
-      return await Book.find({});
+      return await Book.find({}).populate('author');
     },
     allAuthors: async () => {
       // authors.map(author => ({ ...author, bookCount: books.filter(book => book.author === author.name).length }))

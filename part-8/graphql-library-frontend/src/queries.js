@@ -6,7 +6,6 @@ export const ALL_AUTHORS = gql`
       id
       name
       born
-      bookCount
     }
   }
 `;
@@ -15,9 +14,13 @@ export const ALL_BOOKS = gql`
   query {
     allBooks {
       id
-      author
       published
       title
+      author {
+        id
+        name
+        born
+      }
     }
   }
 `;
