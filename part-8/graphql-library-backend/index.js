@@ -25,6 +25,7 @@ const typeDefs = `
     authorCount: Int!
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
+    allGenres: [String!]!
   }
 
   type Author {
@@ -97,9 +98,19 @@ const resolvers = {
 
       return await Book.find({}).populate('author');
     },
+    allGenres: async (root, args) => {
+      const books = await Book.find({});
+      return await [...new Set(books.map(book => book.genres).flat())];
+    },
     allAuthors: async () => {
-      // authors.map(author => ({ ...author, bookCount: books.filter(book => book.author === author.name).length }))
-      return await Author.find({});
+      const authors = await Author.find({});
+      const authorsWithBookCount = await Promise.all(
+        authors.map(async (author) => {
+          const bookCount = await Book.countDocuments({ author });
+          return { id: author.id, name: author.name, born: author.born, bookCount };
+        })
+      );
+      return authorsWithBookCount;
     }
   },
   Mutation: {

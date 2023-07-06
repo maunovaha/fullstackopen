@@ -16,7 +16,14 @@ export const ALL_AUTHORS = gql`
       id
       name
       born
+      bookCount
     }
+  }
+`;
+
+export const ALL_GENRES = gql`
+  query {
+    allGenres
   }
 `;
 

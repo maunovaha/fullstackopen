@@ -1,14 +1,13 @@
 import { useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { ALL_BOOKS } from '../queries';
-
-const availableGenres = (books) => {
-  return [...new Set(books.map(book => book.genres).flat())];
-};
+import { ALL_BOOKS, ALL_GENRES } from '../queries';
 
 const Books = (props) => {
   const [genre, setGenre] = useState(null);
-  const result = useQuery(ALL_BOOKS, {
+  const allGenresResult = useQuery(ALL_GENRES, {
+    pollInterval: 5000
+  });
+  const allBooksResult = useQuery(ALL_BOOKS, {
     variables: { genre },
     pollInterval: 5000
   });
@@ -17,7 +16,7 @@ const Books = (props) => {
     return null;
   }
 
-  if (result.loading) {
+  if (allGenresResult.loading || allBooksResult.loading) {
     return <div>Loading...</div>;
   }
 
@@ -31,8 +30,8 @@ const Books = (props) => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {result.data.allBooks.map((book) => (
-            <tr key={book.title}>
+          {allBooksResult.data.allBooks.map((book) => (
+            <tr key={book.id}>
               <td>{book.title}</td>
               <td>{book.author.name}</td>
               <td>{book.published}</td>
@@ -43,8 +42,8 @@ const Books = (props) => {
       <div>
         <p>Filter books by genre:</p>
         <button onClick={() => setGenre(null)}>All genres</button>
-        {availableGenres(result.data.allBooks).map((genre) => (
-          <button onClick={() => setGenre(genre)}>{genre}</button>
+        {allGenresResult.data.allGenres.map((genre) => (
+          <button key={genre} onClick={() => setGenre(genre)}>{genre}</button>
         ))}
       </div>
     </div>
