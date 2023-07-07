@@ -1,5 +1,26 @@
 import { gql } from '@apollo/client';
 
+const PERSON_DETAILS = gql`
+  fragment PersonDetails on Person {
+    id
+    name
+    phone
+    address {
+      street
+      city
+    }
+  }
+`;
+
+export const PERSON_ADDED = gql`
+  subscription {
+    personAdded {
+      ...PersonDetails
+    }
+  }
+  ${PERSON_DETAILS}
+`;
+
 export const ALL_PERSONS = gql`
   query {
     allPersons {
@@ -18,43 +39,28 @@ export const CREATE_PERSON = gql`
       city: $city
       phone: $phone
     ) {
-      id
-      name
-      phone
-      address {
-        street
-        city
-      }
+      ...PersonDetails
     }
   }
+  ${PERSON_DETAILS}
 `;
 
 export const FIND_PERSON = gql`
   query findPersonByName($nameToSearch: String!) {
     findPerson(name: $nameToSearch) {
-      id
-      name
-      phone
-      address {
-        street
-        city
-      }
+      ...PersonDetails
     }
   }
+  ${PERSON_DETAILS}
 `;
 
 export const EDIT_PHONE_NUMBER = gql`
   mutation editNumber($name: String!, $phone: String!) {
     editNumber(name: $name, phone: $phone) {
-      id
-      name
-      phone
-      address {
-        street
-        city
-      }
+      ...PersonDetails
     }
   }
+  ${PERSON_DETAILS}
 `;
 
 export const LOGIN = gql`

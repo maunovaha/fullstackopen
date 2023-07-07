@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import { CREATE_PERSON, ALL_PERSONS } from '../queries';
+import { updateCache } from '../App';
 
 const PersonForm = ({ persons, setError }) => {
   const [name, setName] = useState('');
@@ -14,11 +15,7 @@ const PersonForm = ({ persons, setError }) => {
     update: (cache, response) => {
       // Apollo client cache needs to be updated when adding a new person,
       // so that they appear on the list without refreshing the page.
-      cache.updateQuery({ query: ALL_PERSONS }, ({ allPersons }) => {
-        return {
-          allPersons: allPersons.concat(response.data.addPerson)
-        }
-      })
+      updateCache(cache, { query: ALL_PERSONS }, response.data.addPerson);
     }
   });
 
