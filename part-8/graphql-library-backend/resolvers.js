@@ -34,6 +34,11 @@ const resolvers = {
       const authors = await Author.find({});
       const authorsWithBookCount = await Promise.all(
         authors.map(async (author) => {
+          // Since `bookCount` needs to be calculated individually for all books, I believe
+          // this causes n+1 query problem. The issue could be fixed e.g. by storing 
+          // the `bookCount` as a separate field to authors table or using some sort of 
+          // aggregate query; Yet, I am not interested to waste time on this because
+          // mongodb sucks for storing this kind of data anyway.
           const bookCount = await Book.countDocuments({ author });
           return { id: author.id, name: author.name, born: author.born, bookCount };
         })
