@@ -5,7 +5,58 @@ import Books from './components/Books';
 import NewBook from './components/NewBook';
 import Recommend from './components/Recommend';
 import LoginForm from './components/LoginForm';
-import { BOOK_ADDED } from './queries';
+import { BOOK_ADDED, ALL_BOOKS, ALL_GENRES } from './queries';
+
+export const updateCache = (cache, addedBook) => {
+  // All genres are queried using a `null` variable, so they should be always present in the array
+  const addedGenres = [null, ...addedBook.genres];
+
+  // Books are cache using their specific genre keys
+  addedGenres.forEach((genre) => {
+    const variables = { genre };
+    const data = cache.readQuery({ query: ALL_BOOKS, variables });
+    const existingBooks = data ? data.allBooks : [];
+
+    // Check if the added book already exists in the cache
+    const bookExists = existingBooks.some(book => book.id === addedBook.id);
+
+    if (!bookExists) {
+      cache.writeQuery({
+        query: ALL_BOOKS,
+        variables,
+        data: {
+          ...data,
+          allBooks: [...existingBooks, addedBook],
+        },
+      });
+    }
+  });
+
+  // Genres cache needs to be updated as well e.g. to allow filtering using new genres
+  updateGenresCache(cache, addedBook.genres);
+};
+
+const updateGenresCache = (cache, addedGenres) => {
+  if (addedGenres.length === 0) {
+    return;
+  }
+
+  const data = cache.readQuery({ query: ALL_GENRES });
+  const existingGenres = data ? data.allGenres : [];
+
+  // Check which genres (if any) are missing from the cache
+  const missingGenres = addedGenres.filter(genre => !existingGenres.includes(genre));
+
+  if (missingGenres.length > 0) {
+    cache.writeQuery({
+      query: ALL_GENRES,
+      data: {
+        ...data,
+        allGenres: [...new Set([...existingGenres, ...missingGenres])]
+      },
+    });
+  }
+};
 
 const App = () => {
   const [token, setToken] = useState(null);
@@ -22,6 +73,7 @@ const App = () => {
     onData: ({ data }) => {
       const addedBook = data.data.bookAdded;
       console.log("Book added:", addedBook);
+      updateCache(client.cache, addedBook);
     }
   });
 
