@@ -1,3 +1,23 @@
+interface UserInput {
+  height: number;
+  weight: number;
+}
+
+const parseUserInput = (args: string[]): UserInput => {
+  if (args.length !== 4) {
+    throw new Error('Run the program using `npm run calculate-bmi <height> <weight>`');
+  }
+
+  const height = Number(args[2]);
+  const weight = Number(args[3]);
+
+  if (isNaN(height) || isNaN(weight)) {
+    throw new Error('At least one of the provided values were not numbers!');
+  }
+
+  return { height, weight };
+};
+
 const calculateBmi = (height: number, weight: number): string => {
   const bmi = (weight / height / height) * 10000;
 
@@ -12,4 +32,13 @@ const calculateBmi = (height: number, weight: number): string => {
   }
 };
 
-console.log(calculateBmi(180, 74));
+try {
+  const { height, weight } = parseUserInput(process.argv);
+  console.log(calculateBmi(height, weight));
+} catch (error: unknown) {
+  let errorMsg = 'Something went wrong: ';
+  if (error instanceof Error) {
+    errorMsg += error.message;
+  }
+  console.log(errorMsg);
+}
