@@ -33,7 +33,7 @@ const parseUserInput = (args: string[]): UserInput => {
   return { target, dailyExerciseHours };
 };
 
-const calculateRating = (average: number, target: number): ExerciseRating => {
+const calculateRating = (average: number): ExerciseRating => {
   if (average < 1) {
     return { rating: 1, ratingDescription: 'you are the worst' };
   } else if (average >= 1 && average < 2.5) {
@@ -49,7 +49,7 @@ const calculateExercises = (target: number, dailyExerciseHours: number[]): Resul
   const totalExerciseHours = dailyExerciseHours.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
   const average = totalExerciseHours / periodLength;
   const success = average >= target;
-  const { rating, ratingDescription } = calculateRating(average, target);
+  const { rating, ratingDescription } = calculateRating(average);
 
   return {
     periodLength,
