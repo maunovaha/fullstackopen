@@ -43,7 +43,7 @@ const calculateRating = (average: number): ExerciseRating => {
   }
 };
 
-const calculateExercises = (target: number, dailyExerciseHours: number[]): Result => {
+export const calculateExercises = (target: number, dailyExerciseHours: number[]): Result => {
   const periodLength = dailyExerciseHours.length;
   const trainingDays = dailyExerciseHours.filter(exerciseHours => exerciseHours !== 0).length;
   const totalExerciseHours = dailyExerciseHours.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
