@@ -1,9 +1,13 @@
 import diaryData from '../../data/entries.json';
-import { DiaryEntry, NonSensitiveDiaryEntry } from '../types';
+import { DiaryEntry, NewDiaryEntry, NonSensitiveDiaryEntry } from '../types';
 
 // Uses type assertion to fix compiler warning; Should be used only
 // when we know what we are doing!
 const diaries: DiaryEntry[] = diaryData as DiaryEntry[];
+
+const findById = (id: number): DiaryEntry | undefined => {
+  return diaries.find(diary => diary.id === id);
+};
 
 const getEntries = (): DiaryEntry[] => {
   return diaries;
@@ -20,11 +24,17 @@ const getNonSensitiveEntries = (): NonSensitiveDiaryEntry[] => {
   });
 };
 
-const addDiary = () => {
-  return null;
+const addDiary = (diaryEntry: NewDiaryEntry): DiaryEntry => {
+  const newDiaryEntry = {
+    id: Math.max(...diaries.map(diary => diary.id)) + 1,
+    ...diaryEntry
+  };
+  diaries.push(newDiaryEntry);
+  return newDiaryEntry;
 };
 
 export default {
+  findById,
   getEntries,
   addDiary,
   getNonSensitiveEntries
