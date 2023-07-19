@@ -28,6 +28,13 @@ const courseParts: CoursePart[] = [
     description: 'Confusing description',
     backgroundMaterial: 'https://type-level-typescript.com/template-literal-types',
     kind: 'background'
+  },
+  {
+    name: "Backend development",
+    exerciseCount: 21,
+    description: "Typing the backend",
+    requirements: ["nodejs", "jest"],
+    kind: "special"
   }
 ];
 const totalExerciseCount = courseParts.reduce((carry, part) => carry + part.exerciseCount, 0);
