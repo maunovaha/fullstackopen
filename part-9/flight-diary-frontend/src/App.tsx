@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import diaryService from './services/diaryService';
+import diaryService, { isFailedRequest } from './services/diaryService';
 import { Diary } from './types';
 import DiaryList from './components/DiaryList';
 import DiaryForm from './components/DiaryForm';
@@ -15,8 +15,10 @@ const App = () => {
 
   useEffect(() => {
     const fetchDiaries = async () => {
-      const diaries = await diaryService.getAllDiaries();
-      setDiaries(diaries);
+      const data = await diaryService.getAllDiaries();
+      if (!isFailedRequest(data)) {
+        setDiaries(data);
+      }
       setLoading(false);
     };
     fetchDiaries();
