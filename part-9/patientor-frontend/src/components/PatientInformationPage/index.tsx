@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { JournalEntry, Patient } from '../../types';
+import { JournalEntry, Patient, Diagnosis } from '../../types';
 import patientService from "../../services/patients";
+import diagnoseService from "../../services/diagnoses";
 
 interface PatientInformationPageProps {
   patientId: string;
@@ -8,12 +9,24 @@ interface PatientInformationPageProps {
 
 const PatientInformationPage = ({ patientId } : PatientInformationPageProps) => {
   const [patient, setPatient] = useState<Patient>();
+  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
 
   useEffect(() => {
     const fetchPatientInfo = async () => {
       const patientResource = await patientService.findOne(patientId);
+      const diagnosisCodes = patientResource
+        .entries
+        .map(entry => entry.diagnosisCodes)
+        .filter(diagnosisCodes => diagnosisCodes !== undefined) // Removes undefined values
+        .flat();
+      if (diagnosisCodes.length > 0) {
+        const diagnoses = await diagnoseService.getAll();
+        const filteredDiagnoses = diagnoses.filter(diagnosis => diagnosisCodes.includes(diagnosis.code));
+        setDiagnoses(filteredDiagnoses);
+      }
       setPatient(patientResource);
     };
+
     fetchPatientInfo();
   }, [patientId]);
 
@@ -33,10 +46,10 @@ const PatientInformationPage = ({ patientId } : PatientInformationPageProps) => 
         <div key={entry.id}>
           <p><b>{entry.date}</b></p>
           <p>- {entry.description}</p>
-          {entry.diagnosisCodes &&
+          {diagnoses &&
             <ul>
-              {entry.diagnosisCodes?.map((diagnosis: string) => (
-                <li key={diagnosis}>{diagnosis}</li>
+              {diagnoses.map((diagnosis: Diagnosis) => (
+                <li key={diagnosis.code}>{diagnosis.code} {diagnosis.name}</li>
               ))}
             </ul>
           }
