@@ -1,6 +1,9 @@
-import patientData from '../../data/patients';
-import { NonSensitivePatientEntry, PatientEntry, NewPatientEntry } from '../types';
+import patientDataSeed from '../../data/patients';
+import { NonSensitivePatientEntry, PatientEntry, NewPatientEntry, NewJournalEntry } from '../types';
 import { v4 as uuid } from 'uuid';
+
+// Modifying the patient data via `addJournalEntry` is not possible, so we create a copy of the seed data
+let patientData = [...patientDataSeed];
 
 const getNonSensitiveEntries = (): NonSensitivePatientEntry[] => {
   return patientData.map((patient) => {
@@ -22,8 +25,16 @@ const addPatient = (patientEntry: NewPatientEntry): PatientEntry => {
   return newPatientEntry;
 };
 
+const addJournalEntry = (patient: PatientEntry, journalEntry: NewJournalEntry): PatientEntry => {
+  const newJournalEntry = { id: uuid(), ...journalEntry };
+  const updatedPatient = { ...patient, entries: [...patient.entries, newJournalEntry] };
+  patientData = patientData.map(existingPatient => existingPatient.id === updatedPatient.id ? updatedPatient : existingPatient);
+  return updatedPatient;
+};
+
 export default {
   getNonSensitiveEntries,
   addPatient,
+  addJournalEntry,
   findById
 };
