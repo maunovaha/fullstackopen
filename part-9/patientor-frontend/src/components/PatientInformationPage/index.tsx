@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { JournalEntry, Patient, Diagnosis } from '../../types';
-import patientService from "../../services/patients";
+import { JournalEntry, Patient, Diagnosis, NewJournalEntry } from '../../types';
+import patientService, { isFailedRequest } from "../../services/patients";
 import diagnoseService from "../../services/diagnoses";
 import HospitalEntryInfo from "./HospitalEntryInfo";
 import OccupationalHealthcareEntryInfo from "./OccupationalHealthcareEntryInfo";
 import HealthCheckEntryInfo from "./HealthCheckEntryInfo";
+import HospitalEntryForm from "./HospitalEntryForm";
 
 interface PatientInformationPageProps {
   patientId: string;
@@ -30,6 +31,20 @@ const entryDetails = (entry: JournalEntry, diagnoses: Diagnosis[]) => {
 const PatientInformationPage = ({ patientId } : PatientInformationPageProps) => {
   const [patient, setPatient] = useState<Patient>();
   const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const submitJournalEntry = async (values: NewJournalEntry): Promise<boolean> => {
+    const data = await patientService.addJournalEntry(patientId, values);
+
+    if (!isFailedRequest(data)) {
+      setPatient(data);
+      setErrorMessage('');
+      return true;
+    } else {
+      setErrorMessage(data.errorMessage);
+      return false;
+    }
+  };
 
   useEffect(() => {
     const fetchPatientInfo = async () => {
@@ -60,7 +75,8 @@ const PatientInformationPage = ({ patientId } : PatientInformationPageProps) => 
       <p>Gender: {patient.gender}</p>
       <p>Ssn: {patient.ssn || <em>Not set</em>}</p>
       <p>Occupation: {patient.occupation}</p>
-      <h3>Entries</h3>
+      <HospitalEntryForm onSubmit={submitJournalEntry} errorMessage={errorMessage} />
+      <h3 style={{ marginTop: '2rem' }}>Entries ({patient.entries.length})</h3>
       {patient.entries.map((entry: JournalEntry) => entryDetails(entry, diagnoses))}
     </>
   );
