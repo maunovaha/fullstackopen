@@ -3,11 +3,10 @@ import { SyntheticEvent, useState } from "react";
 import { NewOccupationalHealthcareEntry } from "../../types";
 
 interface OccupationalHealthcareEntryFormProps {
-  onSubmit: (values: NewOccupationalHealthcareEntry) => Promise<boolean>;
-  errorMessage: string;
+  onSubmit: (values: NewOccupationalHealthcareEntry) => Promise<string>;
 }
 
-const OccupationalHealthcareEntryForm = ({ onSubmit, errorMessage }: OccupationalHealthcareEntryFormProps) => {
+const OccupationalHealthcareEntryForm = ({ onSubmit }: OccupationalHealthcareEntryFormProps) => {
   const [description, setDescription] = useState('');
   const [date, setDate] = useState('');
   const [specialist, setSpecialist] = useState('');
@@ -15,6 +14,7 @@ const OccupationalHealthcareEntryForm = ({ onSubmit, errorMessage }: Occupationa
   const [employerName, setEmployerName] = useState('');
   const [sickLeaveStartDate, setSickLeaveStartDate] = useState('');
   const [sickLeaveEndDate, setSickLeaveEndDate] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
@@ -37,11 +37,12 @@ const OccupationalHealthcareEntryForm = ({ onSubmit, errorMessage }: Occupationa
       };
     }
 
-    const success = await onSubmit(formValues);
+    const errorResponse = await onSubmit(formValues);
 
-    if (success) {
+    if (errorResponse.length === 0) {
       handleClear();
     }
+    setErrorMessage(errorResponse);
   };
 
   const handleClear = () => {
@@ -57,7 +58,7 @@ const OccupationalHealthcareEntryForm = ({ onSubmit, errorMessage }: Occupationa
   return (
     <form onSubmit={handleSubmit} style={{ border: '1px solid #000', borderRadius: '8px', padding: '0 1rem 1rem 1rem' }}>
       <h3>New occupational healthcare entry</h3>
-      {(errorMessage && errorMessage.length > 0) && <Alert severity="error" style={{ marginBottom: '1rem' }}>{errorMessage}</Alert>}
+      {errorMessage.length > 0 && <Alert severity="error" style={{ marginBottom: '1rem' }}>{errorMessage}</Alert>}
       <TextField
         value={description}
         onChange={({ target }) => setDescription(target.value)}
@@ -70,10 +71,11 @@ const OccupationalHealthcareEntryForm = ({ onSubmit, errorMessage }: Occupationa
       <TextField
         value={date}
         onChange={({ target }) => setDate(target.value)}
+        type="date"
         variant="outlined"
         margin="normal"
         label="Date"
-        placeholder="YYYY-MM-DD"
+        InputLabelProps={{ shrink: true }}
         fullWidth
         required
       />
@@ -108,18 +110,21 @@ const OccupationalHealthcareEntryForm = ({ onSubmit, errorMessage }: Occupationa
       <TextField
         value={sickLeaveStartDate}
         onChange={({ target }) => setSickLeaveStartDate(target.value)}
+        type="date"
         variant="outlined"
         margin="normal"
         label="Sick leave start date"
-        placeholder="YYYY-MM-DD"
+        InputLabelProps={{ shrink: true }}
         fullWidth
       />
       <TextField
         value={sickLeaveEndDate}
         onChange={({ target }) => setSickLeaveEndDate(target.value)}
+        type="date"
         variant="outlined"
         margin="normal"
         label="Sick leave end date"
+        InputLabelProps={{ shrink: true }}
         fullWidth
       />
       <Stack direction="row" spacing={2} style={{ marginTop: '1rem' }}>

@@ -3,21 +3,21 @@ import { SyntheticEvent, useState } from "react";
 import { NewHospitalJournalEntry } from "../../types";
 
 interface HospitalEntryFormProps {
-  onSubmit: (values: NewHospitalJournalEntry) => Promise<boolean>;
-  errorMessage: string;
+  onSubmit: (values: NewHospitalJournalEntry) => Promise<string>;
 }
 
-const HospitalEntryForm = ({ onSubmit, errorMessage }: HospitalEntryFormProps) => {
+const HospitalEntryForm = ({ onSubmit }: HospitalEntryFormProps) => {
   const [description, setDescription] = useState('');
   const [date, setDate] = useState('');
   const [specialist, setSpecialist] = useState('');
   const [diagnosisCodes, setDiagnosisCodes] = useState('');
   const [dischargeDate, setDischargeDate] = useState('');
   const [dischargeCriteria, setDischargeCriteria] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
-    const success = await onSubmit({
+    const errorResponse = await onSubmit({
       description,
       date,
       specialist,
@@ -28,9 +28,10 @@ const HospitalEntryForm = ({ onSubmit, errorMessage }: HospitalEntryFormProps) =
         criteria: dischargeCriteria
       }
     });
-    if (success) {
+    if (errorResponse.length === 0) {
       handleClear();
     }
+    setErrorMessage(errorResponse);
   };
 
   const handleClear = () => {
@@ -45,8 +46,8 @@ const HospitalEntryForm = ({ onSubmit, errorMessage }: HospitalEntryFormProps) =
   return (
     <form onSubmit={handleSubmit} style={{ border: '1px solid #000', borderRadius: '8px', padding: '0 1rem 1rem 1rem' }}>
       <h3>New hospital entry</h3>
-      {(errorMessage && errorMessage.length > 0) && <Alert severity="error" style={{ marginBottom: '1rem' }}>{errorMessage}</Alert>}
-      <TextField 
+      {errorMessage.length > 0 && <Alert severity="error" style={{ marginBottom: '1rem' }}>{errorMessage}</Alert>}
+      <TextField
         value={description}
         onChange={({ target }) => setDescription(target.value)}
         variant="outlined"
@@ -55,13 +56,14 @@ const HospitalEntryForm = ({ onSubmit, errorMessage }: HospitalEntryFormProps) =
         fullWidth
         required
       />
-      <TextField 
-        value={date} 
+      <TextField
+        value={date}
         onChange={({ target }) => setDate(target.value)}
+        type="date"
         variant="outlined"
         margin="normal"
         label="Date"
-        placeholder="YYYY-MM-DD"
+        InputLabelProps={{ shrink: true }}
         fullWidth
         required
       />
@@ -87,10 +89,11 @@ const HospitalEntryForm = ({ onSubmit, errorMessage }: HospitalEntryFormProps) =
       <TextField
         value={dischargeDate}
         onChange={({ target }) => setDischargeDate(target.value)}
+        type="date"
         variant="outlined"
         margin="normal"
         label="Discharge date"
-        placeholder="YYYY-MM-DD"
+        InputLabelProps={{ shrink: true }}
         fullWidth
         required
       />

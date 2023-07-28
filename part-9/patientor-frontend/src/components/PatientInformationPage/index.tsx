@@ -33,18 +33,15 @@ const entryDetails = (entry: JournalEntry, diagnoses: Diagnosis[]) => {
 const PatientInformationPage = ({ patientId } : PatientInformationPageProps) => {
   const [patient, setPatient] = useState<Patient>();
   const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
-  const [errorMessage, setErrorMessage] = useState('');
 
-  const submitJournalEntry = async (values: NewJournalEntry): Promise<boolean> => {
+  const submitJournalEntry = async (values: NewJournalEntry): Promise<string> => {
     const data = await patientService.addJournalEntry(patientId, values);
 
     if (!isFailedRequest(data)) {
       setPatient(data);
-      setErrorMessage('');
-      return true;
+      return '';
     } else {
-      setErrorMessage(data.errorMessage);
-      return false;
+      return data.errorMessage;
     }
   };
 
@@ -77,11 +74,11 @@ const PatientInformationPage = ({ patientId } : PatientInformationPageProps) => 
       <p>Gender: {patient.gender}</p>
       <p>Ssn: {patient.ssn || <em>Not set</em>}</p>
       <p>Occupation: {patient.occupation}</p>
-      <HospitalEntryForm onSubmit={submitJournalEntry} errorMessage={errorMessage} />
+      <HospitalEntryForm onSubmit={submitJournalEntry} />
       <br />
-      <OccupationalHealthcareEntryForm onSubmit={submitJournalEntry} errorMessage={errorMessage} />
+      <OccupationalHealthcareEntryForm onSubmit={submitJournalEntry} />
       <br />
-      <HealthCheckEntryForm onSubmit={submitJournalEntry} errorMessage={errorMessage} />
+      <HealthCheckEntryForm onSubmit={submitJournalEntry} />
       <h3 style={{ marginTop: '2rem' }}>Entries ({patient.entries.length})</h3>
       {patient.entries.map((entry: JournalEntry) => entryDetails(entry, diagnoses))}
     </>
