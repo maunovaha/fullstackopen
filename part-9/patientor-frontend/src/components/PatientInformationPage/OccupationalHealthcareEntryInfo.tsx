@@ -7,15 +7,17 @@ interface OccupationalHealthcareEntryInfoProps {
 }
 
 const OccupationalHealthcareEntryInfo = ({ entry, diagnoses }: OccupationalHealthcareEntryInfoProps) => {
+  const filteredDiagnoses = diagnoses.filter(diagnosis => entry.diagnosisCodes?.includes(diagnosis.code));
+
   return (
     <div key={entry.id} style={{ border: '1px solid', borderRadius: '0.5rem', padding: '1rem', marginBottom: '1rem' }}>
       <div><Healing color="secondary" fontSize="large" /></div>
       <p><b>{entry.date}</b></p>
       <p>- {entry.description}</p>
       {entry.sickLeave && <p>- On a sick leave between {entry.sickLeave.startDate} - {entry.sickLeave.endDate}</p>}
-      {diagnoses &&
+      {filteredDiagnoses &&
         <ul>
-          {diagnoses.map((diagnosis: Diagnosis) => (
+          {filteredDiagnoses.map((diagnosis: Diagnosis) => (
             <li key={diagnosis.code}>{diagnosis.code} {diagnosis.name}</li>
           ))}
         </ul>

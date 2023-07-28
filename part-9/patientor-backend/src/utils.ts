@@ -17,10 +17,10 @@ const parseString = (value: unknown, fieldName: string): string => {
 };
 
 const parseNumber = (value: unknown, fieldName: string): number => {
-  if (!value || (typeof value !== 'string' && typeof value !== 'number')) {
+  if (value == null || typeof value === 'undefined' || (typeof value !== 'string' && typeof value !== 'number')) {
     throw new Error(`Incorrect or missing ${fieldName}: ${value}`);
   }
-  return typeof value === 'string' ? Number(value) : value;
+  return Number(value);
 };
 
 const parseStringArray = (value: unknown, fieldName: string): string[] => {

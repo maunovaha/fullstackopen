@@ -6,6 +6,8 @@ import HospitalEntryInfo from "./HospitalEntryInfo";
 import OccupationalHealthcareEntryInfo from "./OccupationalHealthcareEntryInfo";
 import HealthCheckEntryInfo from "./HealthCheckEntryInfo";
 import HospitalEntryForm from "./HospitalEntryForm";
+import OccupationalHealthcareEntryForm from "./OccupationalHealthcareEntryForm";
+import HealthCheckEntryForm from "./HealthCheckEntryForm";
 
 interface PatientInformationPageProps {
   patientId: string;
@@ -76,6 +78,10 @@ const PatientInformationPage = ({ patientId } : PatientInformationPageProps) => 
       <p>Ssn: {patient.ssn || <em>Not set</em>}</p>
       <p>Occupation: {patient.occupation}</p>
       <HospitalEntryForm onSubmit={submitJournalEntry} errorMessage={errorMessage} />
+      <br />
+      <OccupationalHealthcareEntryForm onSubmit={submitJournalEntry} errorMessage={errorMessage} />
+      <br />
+      <HealthCheckEntryForm onSubmit={submitJournalEntry} errorMessage={errorMessage} />
       <h3 style={{ marginTop: '2rem' }}>Entries ({patient.entries.length})</h3>
       {patient.entries.map((entry: JournalEntry) => entryDetails(entry, diagnoses))}
     </>
